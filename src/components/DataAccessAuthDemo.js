@@ -17,10 +17,36 @@ const DataAccessAuthDemo = () => {
   const [selectedTable, setSelectedTable] = useState('patient_records');
   const [selectedField, setSelectedField] = useState('department');
   const [selectedValue, setSelectedValue] = useState('Cardiology');
+  
+  // Executed query state
+  const [executedQuery, setExecutedQuery] = useState({
+    table: 'patient_records',
+    field: 'department',
+    value: 'Cardiology'
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasExecuted, setHasExecuted] = useState(true);
 
   const handleUserChange = (user) => {
     setCurrentUser(user);
     setShowLogin(false);
+  };
+  
+  // Execute query function
+  const executeQuery = () => {
+    setIsLoading(true);
+    // Simulate query execution delay
+    setTimeout(() => {
+      setExecutedQuery({
+        table: selectedTable,
+        field: selectedField,
+        value: selectedValue
+      });
+      setHasExecuted(true);
+      setIsLoading(false);
+      // Switch to results tab automatically
+      setActiveTab('results');
+    }, 500);
   };
   
   const users = [
@@ -71,28 +97,50 @@ const DataAccessAuthDemo = () => {
   };
   
   // Get available values based on selected field
-  const getFieldValues = () => {
-    switch(selectedField) {
-      case 'department':
-        return ['Cardiology', 'Oncology', 'Neurology', 'Pediatrics', 'Emergency'];
-      case 'patient_id':
-        return ['P-10234', 'P-10235', 'P-10236', 'P-10237', 'P-10238'];
-      case 'diagnosis':
-        return ['Hypertension', 'Diabetes', 'Heart Failure', 'Asthma', 'COVID-19'];
-      case 'status':
-        return ['Active', 'Discharged', 'Pending', 'Critical'];
-      case 'medication_type':
-        return ['Oral', 'IV', 'Injection', 'Topical'];
-      case 'billing_status':
-        return ['Paid', 'Pending', 'Overdue', 'Processing'];
-      default:
-        return ['Cardiology', 'Oncology', 'Neurology'];
+  const getFieldValues = (field = selectedField, table = selectedTable) => {
+    // For table-specific fields
+    if (table === 'medications') {
+      switch(field) {
+        case 'patient_id':
+          return ['P-10234', 'P-10235', 'P-10237', 'P-10238', 'P-10240'];
+        case 'medication_type':
+          return ['Oral', 'IV', 'Injection', 'Topical'];
+        case 'department':
+          return ['Cardiology', 'Oncology', 'Neurology', 'Pediatrics', 'Emergency'];
+        default:
+          return ['Oral', 'IV', 'Injection'];
+      }
+    } else if (table === 'billing') {
+      switch(field) {
+        case 'patient_id':
+          return ['P-10234', 'P-10235', 'P-10236', 'P-10237', 'P-10238'];
+        case 'department':
+          return ['Cardiology', 'Oncology', 'Neurology', 'Pediatrics', 'Emergency'];
+        case 'billing_status':
+          return ['Paid', 'Pending', 'Overdue', 'Processing'];
+        default:
+          return ['Paid', 'Pending', 'Overdue'];
+      }
+    } else {
+      // patient_records table
+      switch(field) {
+        case 'department':
+          return ['Cardiology', 'Oncology', 'Neurology', 'Pediatrics', 'Emergency'];
+        case 'patient_id':
+          return ['P-10234', 'P-10235', 'P-10236', 'P-10237', 'P-10238'];
+        case 'diagnosis':
+          return ['Hypertension', 'Diabetes', 'Heart Failure', 'Asthma', 'COVID-19'];
+        case 'status':
+          return ['Active', 'Discharged', 'Pending', 'Critical'];
+        default:
+          return ['Cardiology', 'Oncology', 'Neurology'];
+      }
     }
   };
   
   // Get available fields based on selected table
-  const getTableFields = () => {
-    switch(selectedTable) {
+  const getTableFields = (table = selectedTable) => {
+    switch(table) {
       case 'patient_records':
         return ['department', 'patient_id', 'diagnosis', 'status'];
       case 'medications':
@@ -108,18 +156,18 @@ const DataAccessAuthDemo = () => {
   const getFilteredData = () => {
     let data = [];
     
-    switch(selectedTable) {
+    switch(executedQuery.table) {
       case 'patient_records':
         data = allPatientRecords.filter(record => {
-          if (selectedField === 'diagnosis') {
+          if (executedQuery.field === 'diagnosis') {
             // For diagnosis, do a partial match
-            return record.diagnosis.toLowerCase().includes(selectedValue.toLowerCase());
+            return record.diagnosis.toLowerCase().includes(executedQuery.value.toLowerCase());
           }
-          return record[selectedField] === selectedValue;
+          return record[executedQuery.field] === executedQuery.value;
         });
         break;
       case 'medications':
-        data = allMedications.filter(med => med[selectedField] === selectedValue);
+        data = allMedications.filter(med => med[executedQuery.field] === executedQuery.value);
         // Join with patient data to get names
         data = data.map(med => {
           const patient = allPatientRecords.find(p => p.patient_id === med.patient_id);
@@ -127,7 +175,7 @@ const DataAccessAuthDemo = () => {
         });
         break;
       case 'billing':
-        data = allBilling.filter(bill => bill[selectedField] === selectedValue);
+        data = allBilling.filter(bill => bill[executedQuery.field] === executedQuery.value);
         // Join with patient data to get names
         data = data.map(bill => {
           const patient = allPatientRecords.find(p => p.patient_id === bill.patient_id);
@@ -142,25 +190,47 @@ const DataAccessAuthDemo = () => {
   const renderPatientData = () => {
     if (!queryResults) return null;
     
-    const filteredData = getFilteredData();
-    
-    if (filteredData.length === 0) {
+    if (isLoading) {
       return (
         <div className="text-center py-8 text-gray-500">
-          <AlertCircle className="h-12 w-12 mx-auto mb-2 text-gray-400" />
-          <p>No records found matching your query.</p>
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mb-2"></div>
+          <p>Executing query...</p>
         </div>
       );
     }
     
-    // Render based on table type
-    if (selectedTable === 'medications') {
-      return renderMedicationsTable(filteredData);
-    } else if (selectedTable === 'billing') {
-      return renderBillingTable(filteredData);
-    } else {
-      return renderPatientRecordsTable(filteredData);
+    if (!hasExecuted) {
+      return (
+        <div className="text-center py-8 text-gray-500">
+          <Database className="h-12 w-12 mx-auto mb-2 text-gray-400" />
+          <p>Build a query and click Execute to see results.</p>
+        </div>
+      );
     }
+    
+    const filteredData = getFilteredData();
+    
+    return (
+      <div className="space-y-4">
+        <div className="bg-blue-50 p-3 rounded border border-blue-200">
+          <p className="text-sm text-gray-600">Showing results for:</p>
+          <code className="text-sm font-mono text-blue-700">
+            SELECT * FROM {executedQuery.table} WHERE {executedQuery.field} = '{executedQuery.value}'
+          </code>
+        </div>
+        
+        {filteredData.length === 0 ? (
+          <div className="text-center py-8 text-gray-500">
+            <AlertCircle className="h-12 w-12 mx-auto mb-2 text-gray-400" />
+            <p>No records found matching your query.</p>
+          </div>
+        ) : (
+          executedQuery.table === 'medications' ? renderMedicationsTable(filteredData) :
+          executedQuery.table === 'billing' ? renderBillingTable(filteredData) :
+          renderPatientRecordsTable(filteredData)
+        )}
+      </div>
+    );
   };
 
   const renderPatientRecordsTable = (data) => {
@@ -330,7 +400,9 @@ const DataAccessAuthDemo = () => {
   };
 
   const renderQueryTransformation = () => {
-    const currentQuery = generateQuery();
+    const currentQuery = hasExecuted 
+      ? `SELECT * FROM ${executedQuery.table} WHERE ${executedQuery.field} = '${executedQuery.value}';`
+      : generateQuery();
     
     return (
       <div className="space-y-4">
@@ -353,8 +425,8 @@ const DataAccessAuthDemo = () => {
   diagnosis,
   medications,
   billing_amount
-FROM ${selectedTable} 
-WHERE ${selectedField} = '${selectedValue}';` 
+FROM ${hasExecuted ? executedQuery.table : selectedTable} 
+WHERE ${hasExecuted ? executedQuery.field : selectedField} = '${hasExecuted ? executedQuery.value : selectedValue}';` 
                 : currentUser.role === 'Billing Staff' ?
                 `SELECT
   patient_id,
@@ -363,8 +435,8 @@ WHERE ${selectedField} = '${selectedValue}';`
   'MASKED' AS diagnosis,
   'MASKED' AS medications,
   billing_amount
-FROM ${selectedTable} 
-WHERE ${selectedField} = '${selectedValue}';`
+FROM ${hasExecuted ? executedQuery.table : selectedTable} 
+WHERE ${hasExecuted ? executedQuery.field : selectedField} = '${hasExecuted ? executedQuery.value : selectedValue}';`
                 : currentUser.role === 'Nurse' ?
                 `SELECT
   patient_id,
@@ -373,8 +445,8 @@ WHERE ${selectedField} = '${selectedValue}';`
   SUBSTR(diagnosis, 1, INSTR(diagnosis, ',')) AS diagnosis,
   medications,
   'MASKED' AS billing_amount
-FROM ${selectedTable} 
-WHERE ${selectedField} = '${selectedValue}';`
+FROM ${hasExecuted ? executedQuery.table : selectedTable} 
+WHERE ${hasExecuted ? executedQuery.field : selectedField} = '${hasExecuted ? executedQuery.value : selectedValue}';`
                 :
                 `SELECT
   patient_id,
@@ -383,8 +455,8 @@ WHERE ${selectedField} = '${selectedValue}';`
   'MASKED' AS diagnosis,
   'MASKED' AS medications,
   billing_amount
-FROM ${selectedTable} 
-WHERE ${selectedField} = '${selectedValue}';`
+FROM ${hasExecuted ? executedQuery.table : selectedTable} 
+WHERE ${hasExecuted ? executedQuery.field : selectedField} = '${hasExecuted ? executedQuery.value : selectedValue}';`
               }
             </code>
           </div>
@@ -774,11 +846,14 @@ WHERE ${selectedField} = '${selectedValue}';`
                         className="w-full border rounded p-2"
                         value={selectedTable}
                         onChange={(e) => {
-                          setSelectedTable(e.target.value);
+                          const newTable = e.target.value;
+                          setSelectedTable(newTable);
                           // Reset field and value when table changes
-                          const newFields = getTableFields();
-                          setSelectedField(newFields[0]);
-                          setSelectedValue(getFieldValues()[0]);
+                          const newFields = getTableFields(newTable);
+                          const newField = newFields[0];
+                          setSelectedField(newField);
+                          const newValues = getFieldValues(newField, newTable);
+                          setSelectedValue(newValues[0]);
                         }}
                       >
                         <option value="patient_records">patient_records</option>
@@ -792,9 +867,11 @@ WHERE ${selectedField} = '${selectedValue}';`
                         className="w-full border rounded p-2"
                         value={selectedField}
                         onChange={(e) => {
-                          setSelectedField(e.target.value);
+                          const newField = e.target.value;
+                          setSelectedField(newField);
                           // Reset value when field changes
-                          setSelectedValue(getFieldValues()[0]);
+                          const newValues = getFieldValues(newField, selectedTable);
+                          setSelectedValue(newValues[0]);
                         }}
                       >
                         {getTableFields().map(field => (
@@ -818,6 +895,16 @@ WHERE ${selectedField} = '${selectedValue}';`
                   <div className="bg-gray-50 p-3 rounded border">
                     <p className="text-sm text-gray-600 mb-1">Generated Query:</p>
                     <code className="text-sm font-mono">{generateQuery()}</code>
+                    {(hasExecuted && (
+                      executedQuery.table !== selectedTable || 
+                      executedQuery.field !== selectedField || 
+                      executedQuery.value !== selectedValue
+                    )) && (
+                      <p className="text-sm text-amber-600 mt-2 flex items-center">
+                        <AlertCircle className="h-4 w-4 mr-1" />
+                        Query has changed. Click Execute to run the new query.
+                      </p>
+                    )}
                   </div>
                 </div>
               ) : (
@@ -833,9 +920,26 @@ WHERE ${selectedField} = '${selectedValue}';`
                       readOnly
                     />
                   </div>
-                  <button className="ml-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 flex items-center">
-                    <FileSearch className="h-4 w-4 mr-2" />
-                    Execute
+                  <button 
+                    onClick={executeQuery}
+                    disabled={isLoading}
+                    className={`ml-4 px-4 py-2 text-white rounded flex items-center ${
+                      isLoading 
+                        ? 'bg-gray-400 cursor-not-allowed' 
+                        : 'bg-green-500 hover:bg-green-600'
+                    }`}
+                  >
+                    {isLoading ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        Executing...
+                      </>
+                    ) : (
+                      <>
+                        <FileSearch className="h-4 w-4 mr-2" />
+                        Execute
+                      </>
+                    )}
                   </button>
                 </div>
               )}
