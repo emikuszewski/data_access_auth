@@ -488,9 +488,6 @@ WHERE ${hasExecuted ? executedQuery.field : selectedField} = '${hasExecuted ? ex
             )}
             {currentUser.role === 'Nurse' && (
               <>
-                <li>
-                  <span className="font-semibold">Note:</span> Current policies enforce data masking and access controls. Department affiliation (e.g., Nurse Smith in Cardiology) is not included in the current policy set. Production implementations would typically include department-based policies as an additional access control layer.
-                </li>
                 <li>Column Masking: SSN completely masked</li>
                 <li>Column Masking: Showing only primary diagnosis (truncated at first comma)</li>
                 <li>Full Access: Medications data for patient care</li>
@@ -536,13 +533,21 @@ WHERE ${hasExecuted ? executedQuery.field : selectedField} = '${hasExecuted ? ex
             <table className="w-full border-collapse">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="p-2 text-left font-medium text-gray-500 text-sm">Role</th>
-                  <th className="p-2 text-left font-medium text-gray-500 text-sm">Patient ID</th>
-                  <th className="p-2 text-left font-medium text-gray-500 text-sm">Name</th>
-                  <th className="p-2 text-left font-medium text-gray-500 text-sm">SSN</th>
-                  <th className="p-2 text-left font-medium text-gray-500 text-sm">Diagnosis</th>
-                  <th className="p-2 text-left font-medium text-gray-500 text-sm">Medications</th>
-                  <th className="p-2 text-left font-medium text-gray-500 text-sm">Billing</th>
+                  <th className="p-2 text-left font-medium text-gray-500 text-sm whitespace-nowrap">Role</th>
+                  <th className="p-2 text-left font-medium text-gray-500 text-sm whitespace-nowrap">Patient ID</th>
+                  <th className="p-2 text-left font-medium text-gray-500 text-sm whitespace-nowrap">Name</th>
+                  <th className="p-2 text-left font-medium text-gray-500 text-sm whitespace-nowrap">SSN</th>
+                  <th className="p-2 text-left font-medium text-gray-500 text-sm whitespace-nowrap">Department</th>
+                  <th className="p-2 text-left font-medium text-gray-500 text-sm whitespace-nowrap">Status</th>
+                  <th className="p-2 text-left font-medium text-gray-500 text-sm whitespace-nowrap">Diagnosis</th>
+                  <th className="p-2 text-left font-medium text-gray-500 text-sm whitespace-nowrap">Medications</th>
+                  <th className="p-2 text-left font-medium text-gray-500 text-sm whitespace-nowrap">Med Type</th>
+                  <th className="p-2 text-left font-medium text-gray-500 text-sm whitespace-nowrap">Dosage</th>
+                  <th className="p-2 text-left font-medium text-gray-500 text-sm whitespace-nowrap">Prescriber</th>
+                  <th className="p-2 text-left font-medium text-gray-500 text-sm whitespace-nowrap">Billing Amount</th>
+                  <th className="p-2 text-left font-medium text-gray-500 text-sm whitespace-nowrap">Billing Status</th>
+                  <th className="p-2 text-left font-medium text-gray-500 text-sm whitespace-nowrap">Insurance</th>
+                  <th className="p-2 text-left font-medium text-gray-500 text-sm whitespace-nowrap">Billing Date</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
@@ -554,14 +559,30 @@ WHERE ${hasExecuted ? executedQuery.field : selectedField} = '${hasExecuted ? ex
                   <td className="p-2 whitespace-nowrap text-green-500">Full</td>
                   <td className="p-2 whitespace-nowrap text-green-500">Full</td>
                   <td className="p-2 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-2 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-2 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-2 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-2 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-2 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-2 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-2 whitespace-nowrap text-yellow-500">Partial</td>
+                  <td className="p-2 whitespace-nowrap text-yellow-500">Partial</td>
                 </tr>
                 <tr className={currentUser.role === 'Nurse' ? 'bg-blue-50' : ''}>
                   <td className="p-2 whitespace-nowrap">Nurse</td>
                   <td className="p-2 whitespace-nowrap text-green-500">Full</td>
                   <td className="p-2 whitespace-nowrap text-green-500">Full</td>
                   <td className="p-2 whitespace-nowrap text-red-500">None</td>
+                  <td className="p-2 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-2 whitespace-nowrap text-green-500">Full</td>
                   <td className="p-2 whitespace-nowrap text-yellow-500">Partial</td>
                   <td className="p-2 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-2 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-2 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-2 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-2 whitespace-nowrap text-red-500">None</td>
+                  <td className="p-2 whitespace-nowrap text-red-500">None</td>
+                  <td className="p-2 whitespace-nowrap text-red-500">None</td>
                   <td className="p-2 whitespace-nowrap text-red-500">None</td>
                 </tr>
                 <tr className={currentUser.role === 'Billing Staff' ? 'bg-blue-50' : ''}>
@@ -569,8 +590,16 @@ WHERE ${hasExecuted ? executedQuery.field : selectedField} = '${hasExecuted ? ex
                   <td className="p-2 whitespace-nowrap text-green-500">Full</td>
                   <td className="p-2 whitespace-nowrap text-yellow-500">Partial</td>
                   <td className="p-2 whitespace-nowrap text-yellow-500">Partial</td>
+                  <td className="p-2 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-2 whitespace-nowrap text-yellow-500">Partial</td>
                   <td className="p-2 whitespace-nowrap text-red-500">None</td>
                   <td className="p-2 whitespace-nowrap text-red-500">None</td>
+                  <td className="p-2 whitespace-nowrap text-red-500">None</td>
+                  <td className="p-2 whitespace-nowrap text-red-500">None</td>
+                  <td className="p-2 whitespace-nowrap text-red-500">None</td>
+                  <td className="p-2 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-2 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-2 whitespace-nowrap text-green-500">Full</td>
                   <td className="p-2 whitespace-nowrap text-green-500">Full</td>
                 </tr>
                 <tr className={currentUser.role === 'Administrator' ? 'bg-blue-50' : ''}>
@@ -578,8 +607,16 @@ WHERE ${hasExecuted ? executedQuery.field : selectedField} = '${hasExecuted ? ex
                   <td className="p-2 whitespace-nowrap text-green-500">Full</td>
                   <td className="p-2 whitespace-nowrap text-yellow-500">Partial</td>
                   <td className="p-2 whitespace-nowrap text-red-500">None</td>
+                  <td className="p-2 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-2 whitespace-nowrap text-green-500">Full</td>
                   <td className="p-2 whitespace-nowrap text-red-500">None</td>
                   <td className="p-2 whitespace-nowrap text-red-500">None</td>
+                  <td className="p-2 whitespace-nowrap text-red-500">None</td>
+                  <td className="p-2 whitespace-nowrap text-red-500">None</td>
+                  <td className="p-2 whitespace-nowrap text-red-500">None</td>
+                  <td className="p-2 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-2 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-2 whitespace-nowrap text-green-500">Full</td>
                   <td className="p-2 whitespace-nowrap text-green-500">Full</td>
                 </tr>
               </tbody>
