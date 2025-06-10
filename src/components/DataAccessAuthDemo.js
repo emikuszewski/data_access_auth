@@ -398,37 +398,157 @@ WHERE department = 'Cardiology';`
           </h3>
           
           <div className="space-y-2 mt-3">
-            <div className="border rounded p-2 bg-gray-50">
-              <div className="flex justify-between items-center">
-                <div className="font-medium">HIPAA Minimum Necessary</div>
-                <div className="text-green-500 text-sm font-medium">Active</div>
-              </div>
-              <div className="text-sm text-gray-500 mt-1">Limits Protected Health Information (PHI) access to minimum necessary for job function</div>
-            </div>
+            {currentUser.role === 'Physician' && (
+              <>
+                <div className="border rounded p-2 bg-gray-50">
+                  <div className="flex justify-between items-center">
+                    <div className="font-medium">HIPAA Minimum Necessary</div>
+                    <div className="text-green-500 text-sm font-medium">Active</div>
+                  </div>
+                  <div className="text-sm text-gray-500 mt-1">Limits Protected Health Information (PHI) access to minimum necessary for job function</div>
+                </div>
+                
+                <div className="border rounded p-2 bg-gray-50">
+                  <div className="flex justify-between items-center">
+                    <div className="font-medium">Clinical Data Full Access</div>
+                    <div className="text-green-500 text-sm font-medium">Active</div>
+                  </div>
+                  <div className="text-sm text-gray-500 mt-1">Unrestricted access to diagnoses, medications, and treatment information</div>
+                </div>
+                
+                <div className="border rounded p-2 bg-gray-50">
+                  <div className="flex justify-between items-center">
+                    <div className="font-medium">Patient Identity Access</div>
+                    <div className="text-green-500 text-sm font-medium">Active</div>
+                  </div>
+                  <div className="text-sm text-gray-500 mt-1">Full access to patient names and identifiers for clinical care</div>
+                </div>
+              </>
+            )}
             
-            <div className="border rounded p-2 bg-gray-50">
-              <div className="flex justify-between items-center">
-                <div className="font-medium">Financial Data Protection</div>
-                <div className="text-green-500 text-sm font-medium">Active</div>
-              </div>
-              <div className="text-sm text-gray-500 mt-1">Restricts billing data to finance personnel</div>
-            </div>
+            {currentUser.role === 'Billing Staff' && (
+              <>
+                <div className="border rounded p-2 bg-gray-50">
+                  <div className="flex justify-between items-center">
+                    <div className="font-medium">HIPAA Minimum Necessary</div>
+                    <div className="text-green-500 text-sm font-medium">Active</div>
+                  </div>
+                  <div className="text-sm text-gray-500 mt-1">Limits Protected Health Information (PHI) access to minimum necessary for job function</div>
+                </div>
+                
+                <div className="border rounded p-2 bg-gray-50">
+                  <div className="flex justify-between items-center">
+                    <div className="font-medium">Financial Data Full Access</div>
+                    <div className="text-green-500 text-sm font-medium">Active</div>
+                  </div>
+                  <div className="text-sm text-gray-500 mt-1">Complete access to billing amounts and financial records</div>
+                </div>
+                
+                <div className="border rounded p-2 bg-gray-50">
+                  <div className="flex justify-between items-center">
+                    <div className="font-medium">SSN Partial Access</div>
+                    <div className="text-green-500 text-sm font-medium">Active</div>
+                  </div>
+                  <div className="text-sm text-gray-500 mt-1">Last 4 digits visible for identity verification in billing</div>
+                </div>
+                
+                <div className="border rounded p-2 bg-gray-50">
+                  <div className="flex justify-between items-center">
+                    <div className="font-medium">Clinical Data Restriction</div>
+                    <div className="text-green-500 text-sm font-medium">Active</div>
+                  </div>
+                  <div className="text-sm text-gray-500 mt-1">Blocks access to all medical diagnoses and treatment data</div>
+                </div>
+              </>
+            )}
             
-            <div className="border rounded p-2 bg-gray-50">
-              <div className="flex justify-between items-center">
-                <div className="font-medium">Clinical Data Access</div>
-                <div className="text-green-500 text-sm font-medium">Active</div>
-              </div>
-              <div className="text-sm text-gray-500 mt-1">Controls access to diagnoses and treatment information</div>
-            </div>
+            {currentUser.role === 'Nurse' && (
+              <>
+                <div className="border rounded p-2 bg-gray-50">
+                  <div className="flex justify-between items-center">
+                    <div className="font-medium">HIPAA Minimum Necessary</div>
+                    <div className="text-green-500 text-sm font-medium">Active</div>
+                  </div>
+                  <div className="text-sm text-gray-500 mt-1">Limits Protected Health Information (PHI) access to minimum necessary for job function</div>
+                </div>
+                
+                <div className="border rounded p-2 bg-gray-50">
+                  <div className="flex justify-between items-center">
+                    <div className="font-medium">Clinical Care Access</div>
+                    <div className="text-green-500 text-sm font-medium">Active</div>
+                  </div>
+                  <div className="text-sm text-gray-500 mt-1">Access to diagnoses and medications for patient care</div>
+                </div>
+                
+                <div className="border rounded p-2 bg-gray-50">
+                  <div className="flex justify-between items-center">
+                    <div className="font-medium">SSN Full Protection</div>
+                    <div className="text-green-500 text-sm font-medium">Active</div>
+                  </div>
+                  <div className="text-sm text-gray-500 mt-1">Complete masking of Social Security Numbers</div>
+                </div>
+                
+                <div className="border rounded p-2 bg-gray-50">
+                  <div className="flex justify-between items-center">
+                    <div className="font-medium">Financial Data Restriction</div>
+                    <div className="text-green-500 text-sm font-medium">Active</div>
+                  </div>
+                  <div className="text-sm text-gray-500 mt-1">Blocks access to all billing and financial information</div>
+                </div>
+                
+                <div className="border rounded p-2 bg-gray-50">
+                  <div className="flex justify-between items-center">
+                    <div className="font-medium">Patient Identity Access</div>
+                    <div className="text-green-500 text-sm font-medium">Active</div>
+                  </div>
+                  <div className="text-sm text-gray-500 mt-1">Full access to patient names for care coordination</div>
+                </div>
+              </>
+            )}
             
-            <div className="border rounded p-2 bg-gray-50">
-              <div className="flex justify-between items-center">
-                <div className="font-medium">SSN Protection</div>
-                <div className="text-green-500 text-sm font-medium">Active</div>
-              </div>
-              <div className="text-sm text-gray-500 mt-1">Masks SSNs for most users, partial access for billing</div>
-            </div>
+            {currentUser.role === 'Administrator' && (
+              <>
+                <div className="border rounded p-2 bg-gray-50">
+                  <div className="flex justify-between items-center">
+                    <div className="font-medium">HIPAA Minimum Necessary</div>
+                    <div className="text-green-500 text-sm font-medium">Active</div>
+                  </div>
+                  <div className="text-sm text-gray-500 mt-1">Limits Protected Health Information (PHI) access to minimum necessary for job function</div>
+                </div>
+                
+                <div className="border rounded p-2 bg-gray-50">
+                  <div className="flex justify-between items-center">
+                    <div className="font-medium">Aggregate Financial Access</div>
+                    <div className="text-green-500 text-sm font-medium">Active</div>
+                  </div>
+                  <div className="text-sm text-gray-500 mt-1">Access to billing data for reporting and analysis</div>
+                </div>
+                
+                <div className="border rounded p-2 bg-gray-50">
+                  <div className="flex justify-between items-center">
+                    <div className="font-medium">PII Masking Policy</div>
+                    <div className="text-green-500 text-sm font-medium">Active</div>
+                  </div>
+                  <div className="text-sm text-gray-500 mt-1">Partial masking of names and complete SSN protection</div>
+                </div>
+                
+                <div className="border rounded p-2 bg-gray-50">
+                  <div className="flex justify-between items-center">
+                    <div className="font-medium">Clinical Data Restriction</div>
+                    <div className="text-green-500 text-sm font-medium">Active</div>
+                  </div>
+                  <div className="text-sm text-gray-500 mt-1">Blocks access to all medical diagnoses and treatment data</div>
+                </div>
+                
+                <div className="border rounded p-2 bg-gray-50">
+                  <div className="flex justify-between items-center">
+                    <div className="font-medium">Audit Trail Access</div>
+                    <div className="text-green-500 text-sm font-medium">Active</div>
+                  </div>
+                  <div className="text-sm text-gray-500 mt-1">Access to system logs and data access patterns for compliance</div>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
