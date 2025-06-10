@@ -499,7 +499,6 @@ WHERE ${hasExecuted ? executedQuery.field : selectedField} = '${hasExecuted ? ex
                 <li>Column Masking: Full name reduced to first name + initial</li>
                 <li>Column Masking: Personal and clinical data completely masked</li>
                 <li>Full Access: Patient ID and billing information for reporting</li>
-                <li>Row-level security: Limited to current fiscal quarter data only</li>
               </>
             )}
           </ul>
