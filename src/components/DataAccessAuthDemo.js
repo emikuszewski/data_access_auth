@@ -463,7 +463,7 @@ WHERE ${hasExecuted ? executedQuery.field : selectedField} = '${hasExecuted ? ex
         </div>
         
         <div className="bg-blue-50 p-4 rounded border border-blue-200">
-          <h3 className="font-semibold text-gray-700 mb-2">Data Access Auth Transformation Explanation:</h3>
+          <h3 className="font-semibold text-gray-700 mb-2">Data Access AuthZ Transformation Explanation:</h3>
           <ul className="list-disc pl-5 space-y-1 text-gray-600">
             <li>
               Applied <span className="font-semibold">Policy Based Access Control</span> for role: <span className="font-mono bg-blue-100 px-1 rounded">{currentUser.role}</span>
@@ -473,7 +473,7 @@ WHERE ${hasExecuted ? executedQuery.field : selectedField} = '${hasExecuted ? ex
                 <li>
                   <span className="font-semibold">Note:</span> Current policies enforce data masking and access controls. Department affiliation (e.g., Dr. Chen in Cardiology) is not included in the current policy set. Production implementations would typically include department-based policies as an additional access control layer.
                 </li>
-                <li>Full Access: Complete visibility of all patient data fields</li>
+                <li>Full Access: Complete visibility of all patient data fields including Patient ID and Name</li>
                 <li>No Column Masking: SSN, diagnosis, medications, and billing data are fully visible</li>
                 <li>Cross-Department Access: Can query patients from any department</li>
               </>
@@ -526,7 +526,7 @@ WHERE ${hasExecuted ? executedQuery.field : selectedField} = '${hasExecuted ? ex
         <div className="bg-white p-4 rounded shadow">
           <h3 className="font-semibold text-gray-700 mb-4 flex items-center">
             <Shield className="h-5 w-5 mr-2 text-blue-500" />
-            Policy Based Access Policies
+            Policy Access Level
           </h3>
           
           <div className="overflow-x-auto">
@@ -545,8 +545,8 @@ WHERE ${hasExecuted ? executedQuery.field : selectedField} = '${hasExecuted ? ex
               <tbody>
                 <tr className={currentUser.role === 'Physician' ? 'bg-blue-50' : ''}>
                   <td className="p-3 whitespace-nowrap font-medium">Physician</td>
-                  <td className="p-3 whitespace-nowrap text-red-500">None</td>
-                  <td className="p-3 whitespace-nowrap text-red-500">None</td>
+                  <td className="p-3 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-3 whitespace-nowrap text-green-500">Full</td>
                   <td className="p-3 whitespace-nowrap text-green-500">Full</td>
                   <td className="p-3 whitespace-nowrap text-green-500">Full</td>
                   <td className="p-3 whitespace-nowrap text-green-500">Full</td>
@@ -786,7 +786,7 @@ WHERE ${hasExecuted ? executedQuery.field : selectedField} = '${hasExecuted ? ex
           <div className="flex items-center space-x-4">
             <Shield className="h-8 w-8" />
             <div>
-              <h1 className="text-xl font-bold">Data Access Auth Healthcare Demo</h1>
+              <h1 className="text-xl font-bold">Data Access AuthZ Healthcare Demo</h1>
               <p className="text-blue-100 text-sm">Dynamic Authorization for Healthcare Data</p>
             </div>
           </div>
