@@ -468,9 +468,16 @@ WHERE ${hasExecuted ? executedQuery.field : selectedField} = '${hasExecuted ? ex
             <li>
               Applied <span className="font-semibold">Policy Based Access Control</span> for role: <span className="font-mono bg-blue-100 px-1 rounded">{currentUser.role}</span>
             </li>
-            <li>
-              <span className="font-semibold">Note:</span> Current policies enforce data masking and access controls. Department affiliation (e.g., Dr. Chen in Cardiology) is not included in the current policy set. Production implementations would typically include department-based policies as an additional access control layer.
-            </li>
+            {currentUser.role === 'Physician' && (
+              <>
+                <li>
+                  <span className="font-semibold">Note:</span> Current policies enforce data masking and access controls. Department affiliation (e.g., Dr. Chen in Cardiology) is not included in the current policy set. Production implementations would typically include department-based policies as an additional access control layer.
+                </li>
+                <li>Full Access: Complete visibility of all patient data fields</li>
+                <li>No Column Masking: SSN, diagnosis, medications, and billing data are fully visible</li>
+                <li>Cross-Department Access: Can query patients from any department</li>
+              </>
+            )}
             {currentUser.role === 'Billing Staff' && (
               <>
                 <li>Column Masking: Full name reduced to first name + initial</li>
@@ -481,6 +488,9 @@ WHERE ${hasExecuted ? executedQuery.field : selectedField} = '${hasExecuted ? ex
             )}
             {currentUser.role === 'Nurse' && (
               <>
+                <li>
+                  <span className="font-semibold">Note:</span> Current policies enforce data masking and access controls. Department affiliation (e.g., Nurse Smith in Cardiology) is not included in the current policy set. Production implementations would typically include department-based policies as an additional access control layer.
+                </li>
                 <li>Column Masking: SSN completely masked</li>
                 <li>Column Masking: Showing only primary diagnosis (truncated at first comma)</li>
                 <li>Full Access: Medications data for patient care</li>
