@@ -818,8 +818,8 @@ WHERE ${hasExecuted ? executedQuery.field : selectedField} = '${hasExecuted ? ex
                     >
                       <div className="text-2xl">{user.avatar}</div>
                       <div>
-                        <div className="font-medium">{user.name}</div>
-                        <div className="text-xs text-gray-500">{user.role} • {user.department}</div>
+                        <div className="font-medium text-gray-900">{user.name}</div>
+                        <div className="text-xs text-gray-600">{user.role} • {user.department}</div>
                       </div>
                     </button>
                   ))}
