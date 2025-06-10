@@ -30,6 +30,41 @@ const DataAccessAuthDemo = () => {
     { name: 'Alex Johnson', role: 'Administrator', department: 'IT Security', avatar: '👨‍💼' }
   ];
   
+  // Sample data for different queries
+  const allPatientRecords = [
+    { patient_id: 'P-10234', name: 'John Smith', ssn: '123-45-6789', diagnosis: 'Hypertension, Stage 2', medications: 'Lisinopril 10mg daily', billing_amount: '$1,250.00', department: 'Cardiology', status: 'Active' },
+    { patient_id: 'P-10235', name: 'Mary Johnson', ssn: '234-56-7890', diagnosis: 'Atrial Fibrillation', medications: 'Eliquis 5mg twice daily', billing_amount: '$2,300.50', department: 'Cardiology', status: 'Active' },
+    { patient_id: 'P-10236', name: 'Robert Davis', ssn: '345-67-8901', diagnosis: 'Heart Failure (EF 35%)', medications: 'Entresto 97/103mg twice daily', billing_amount: '$3,450.75', department: 'Cardiology', status: 'Active' },
+    { patient_id: 'P-10237', name: 'Lisa Chen', ssn: '456-78-9012', diagnosis: 'Lung Cancer, Stage IIIA', medications: 'Keytruda 200mg IV q3 weeks', billing_amount: '$15,250.00', department: 'Oncology', status: 'Active' },
+    { patient_id: 'P-10238', name: 'James Wilson', ssn: '567-89-0123', diagnosis: 'Breast Cancer, Stage II', medications: 'Tamoxifen 20mg daily', billing_amount: '$8,500.00', department: 'Oncology', status: 'Active' },
+    { patient_id: 'P-10239', name: 'Patricia Brown', ssn: '678-90-1234', diagnosis: 'Migraine, Chronic', medications: 'Aimovig 140mg monthly', billing_amount: '$650.00', department: 'Neurology', status: 'Active' },
+    { patient_id: 'P-10240', name: 'Michael Torres', ssn: '789-01-2345', diagnosis: 'Epilepsy', medications: 'Keppra 1000mg twice daily', billing_amount: '$1,100.00', department: 'Neurology', status: 'Discharged' },
+    { patient_id: 'P-10241', name: 'Jennifer Lee', ssn: '890-12-3456', diagnosis: 'Asthma, Moderate', medications: 'Advair 250/50 twice daily', billing_amount: '$450.00', department: 'Pediatrics', status: 'Active' },
+    { patient_id: 'P-10242', name: 'David Martinez', ssn: '901-23-4567', diagnosis: 'Type 1 Diabetes', medications: 'Insulin Glargine 20 units daily', billing_amount: '$890.00', department: 'Pediatrics', status: 'Active' },
+    { patient_id: 'P-10243', name: 'Susan Anderson', ssn: '012-34-5678', diagnosis: 'COVID-19, Severe', medications: 'Remdesivir 100mg IV daily', billing_amount: '$3,100.00', department: 'Emergency', status: 'Critical' }
+  ];
+
+  const allMedications = [
+    { patient_id: 'P-10234', medication_name: 'Lisinopril', medication_type: 'Oral', dosage: '10mg daily', prescriber: 'Dr. Chen', department: 'Cardiology' },
+    { patient_id: 'P-10235', medication_name: 'Eliquis', medication_type: 'Oral', dosage: '5mg twice daily', prescriber: 'Dr. Chen', department: 'Cardiology' },
+    { patient_id: 'P-10237', medication_name: 'Keytruda', medication_type: 'IV', dosage: '200mg q3 weeks', prescriber: 'Dr. Patel', department: 'Oncology' },
+    { patient_id: 'P-10238', medication_name: 'Tamoxifen', medication_type: 'Oral', dosage: '20mg daily', prescriber: 'Dr. Patel', department: 'Oncology' },
+    { patient_id: 'P-10239', medication_name: 'Aimovig', medication_type: 'Injection', dosage: '140mg monthly', prescriber: 'Dr. Kim', department: 'Neurology' },
+    { patient_id: 'P-10240', medication_name: 'Keppra', medication_type: 'Oral', dosage: '1000mg twice daily', prescriber: 'Dr. Kim', department: 'Neurology' },
+    { patient_id: 'P-10243', medication_name: 'Remdesivir', medication_type: 'IV', dosage: '100mg daily', prescriber: 'Dr. Garcia', department: 'Emergency' }
+  ];
+
+  const allBilling = [
+    { patient_id: 'P-10234', amount: '$1,250.00', billing_status: 'Paid', insurance: 'Blue Cross', department: 'Cardiology', billing_date: '2025-05-15' },
+    { patient_id: 'P-10235', amount: '$2,300.50', billing_status: 'Pending', insurance: 'Aetna', department: 'Cardiology', billing_date: '2025-05-20' },
+    { patient_id: 'P-10236', amount: '$3,450.75', billing_status: 'Overdue', insurance: 'United Health', department: 'Cardiology', billing_date: '2025-04-10' },
+    { patient_id: 'P-10237', amount: '$15,250.00', billing_status: 'Processing', insurance: 'Medicare', department: 'Oncology', billing_date: '2025-05-25' },
+    { patient_id: 'P-10238', amount: '$8,500.00', billing_status: 'Paid', insurance: 'Cigna', department: 'Oncology', billing_date: '2025-05-01' },
+    { patient_id: 'P-10239', amount: '$650.00', billing_status: 'Paid', insurance: 'Blue Cross', department: 'Neurology', billing_date: '2025-05-18' },
+    { patient_id: 'P-10240', amount: '$1,100.00', billing_status: 'Pending', insurance: 'Aetna', department: 'Neurology', billing_date: '2025-05-22' },
+    { patient_id: 'P-10243', amount: '$3,100.00', billing_status: 'Processing', insurance: 'Medicare', department: 'Emergency', billing_date: '2025-05-28' }
+  ];
+
   // Generate SQL query based on selections
   const generateQuery = () => {
     return `SELECT * FROM ${selectedTable} WHERE ${selectedField} = '${selectedValue}';`;
@@ -68,185 +103,230 @@ const DataAccessAuthDemo = () => {
         return ['department', 'patient_id', 'diagnosis'];
     }
   };
+
+  // Filter data based on query
+  const getFilteredData = () => {
+    let data = [];
+    
+    switch(selectedTable) {
+      case 'patient_records':
+        data = allPatientRecords.filter(record => {
+          if (selectedField === 'diagnosis') {
+            // For diagnosis, do a partial match
+            return record.diagnosis.toLowerCase().includes(selectedValue.toLowerCase());
+          }
+          return record[selectedField] === selectedValue;
+        });
+        break;
+      case 'medications':
+        data = allMedications.filter(med => med[selectedField] === selectedValue);
+        // Join with patient data to get names
+        data = data.map(med => {
+          const patient = allPatientRecords.find(p => p.patient_id === med.patient_id);
+          return { ...med, patient_name: patient?.name || 'Unknown' };
+        });
+        break;
+      case 'billing':
+        data = allBilling.filter(bill => bill[selectedField] === selectedValue);
+        // Join with patient data to get names
+        data = data.map(bill => {
+          const patient = allPatientRecords.find(p => p.patient_id === bill.patient_id);
+          return { ...bill, patient_name: patient?.name || 'Unknown' };
+        });
+        break;
+    }
+    
+    return data;
+  };
   
   const renderPatientData = () => {
     if (!queryResults) return null;
     
-    // Display different data based on user role
-    switch(currentUser.role) {
-      case 'Physician':
-        return (
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Patient ID</th>
-                  <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                  <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">SSN</th>
-                  <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Diagnosis</th>
-                  <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Medications</th>
-                  <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Billing</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                <tr>
-                  <td className="p-3 whitespace-nowrap">P-10234</td>
-                  <td className="p-3 whitespace-nowrap font-medium">John Smith</td>
-                  <td className="p-3 whitespace-nowrap">123-45-6789</td>
-                  <td className="p-3 whitespace-nowrap">Hypertension, Stage 2</td>
-                  <td className="p-3 whitespace-nowrap">Lisinopril 10mg daily</td>
-                  <td className="p-3 whitespace-nowrap">$1,250.00</td>
-                </tr>
-                <tr className="bg-gray-50">
-                  <td className="p-3 whitespace-nowrap">P-10235</td>
-                  <td className="p-3 whitespace-nowrap font-medium">Mary Johnson</td>
-                  <td className="p-3 whitespace-nowrap">234-56-7890</td>
-                  <td className="p-3 whitespace-nowrap">Atrial Fibrillation</td>
-                  <td className="p-3 whitespace-nowrap">Eliquis 5mg twice daily</td>
-                  <td className="p-3 whitespace-nowrap">$2,300.50</td>
-                </tr>
-                <tr>
-                  <td className="p-3 whitespace-nowrap">P-10236</td>
-                  <td className="p-3 whitespace-nowrap font-medium">Robert Davis</td>
-                  <td className="p-3 whitespace-nowrap">345-67-8901</td>
-                  <td className="p-3 whitespace-nowrap">Heart Failure (EF 35%)</td>
-                  <td className="p-3 whitespace-nowrap">Entresto 97/103mg twice daily</td>
-                  <td className="p-3 whitespace-nowrap">$3,450.75</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        );
-      case 'Billing Staff':
-        return (
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Patient ID</th>
-                  <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                  <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">SSN</th>
-                  <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Diagnosis</th>
-                  <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Medications</th>
-                  <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Billing</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                <tr>
-                  <td className="p-3 whitespace-nowrap">P-10234</td>
-                  <td className="p-3 whitespace-nowrap font-medium">John S.</td>
-                  <td className="p-3 whitespace-nowrap">XXX-XX-6789</td>
-                  <td className="p-3 whitespace-nowrap text-gray-400 italic">MASKED</td>
-                  <td className="p-3 whitespace-nowrap text-gray-400 italic">MASKED</td>
-                  <td className="p-3 whitespace-nowrap">$1,250.00</td>
-                </tr>
-                <tr className="bg-gray-50">
-                  <td className="p-3 whitespace-nowrap">P-10235</td>
-                  <td className="p-3 whitespace-nowrap font-medium">Mary J.</td>
-                  <td className="p-3 whitespace-nowrap">XXX-XX-7890</td>
-                  <td className="p-3 whitespace-nowrap text-gray-400 italic">MASKED</td>
-                  <td className="p-3 whitespace-nowrap text-gray-400 italic">MASKED</td>
-                  <td className="p-3 whitespace-nowrap">$2,300.50</td>
-                </tr>
-                <tr>
-                  <td className="p-3 whitespace-nowrap">P-10236</td>
-                  <td className="p-3 whitespace-nowrap font-medium">Robert D.</td>
-                  <td className="p-3 whitespace-nowrap">XXX-XX-8901</td>
-                  <td className="p-3 whitespace-nowrap text-gray-400 italic">MASKED</td>
-                  <td className="p-3 whitespace-nowrap text-gray-400 italic">MASKED</td>
-                  <td className="p-3 whitespace-nowrap">$3,450.75</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        );
-      case 'Nurse':
-        return (
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Patient ID</th>
-                  <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                  <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">SSN</th>
-                  <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Diagnosis</th>
-                  <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Medications</th>
-                  <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Billing</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                <tr>
-                  <td className="p-3 whitespace-nowrap">P-10234</td>
-                  <td className="p-3 whitespace-nowrap font-medium">John Smith</td>
-                  <td className="p-3 whitespace-nowrap text-gray-400 italic">MASKED</td>
-                  <td className="p-3 whitespace-nowrap">Hypertension</td>
-                  <td className="p-3 whitespace-nowrap">Lisinopril 10mg daily</td>
-                  <td className="p-3 whitespace-nowrap text-gray-400 italic">MASKED</td>
-                </tr>
-                <tr className="bg-gray-50">
-                  <td className="p-3 whitespace-nowrap">P-10235</td>
-                  <td className="p-3 whitespace-nowrap font-medium">Mary Johnson</td>
-                  <td className="p-3 whitespace-nowrap text-gray-400 italic">MASKED</td>
-                  <td className="p-3 whitespace-nowrap">Atrial Fibrillation</td>
-                  <td className="p-3 whitespace-nowrap">Eliquis 5mg twice daily</td>
-                  <td className="p-3 whitespace-nowrap text-gray-400 italic">MASKED</td>
-                </tr>
-                <tr>
-                  <td className="p-3 whitespace-nowrap">P-10236</td>
-                  <td className="p-3 whitespace-nowrap font-medium">Robert Davis</td>
-                  <td className="p-3 whitespace-nowrap text-gray-400 italic">MASKED</td>
-                  <td className="p-3 whitespace-nowrap">Heart Failure</td>
-                  <td className="p-3 whitespace-nowrap">Entresto 97/103mg twice daily</td>
-                  <td className="p-3 whitespace-nowrap text-gray-400 italic">MASKED</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        );
-      default:
-        return (
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Patient ID</th>
-                  <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                  <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">SSN</th>
-                  <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Diagnosis</th>
-                  <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Medications</th>
-                  <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Billing</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                <tr>
-                  <td className="p-3 whitespace-nowrap">P-10234</td>
-                  <td className="p-3 whitespace-nowrap font-medium">John S.</td>
-                  <td className="p-3 whitespace-nowrap text-gray-400 italic">MASKED</td>
-                  <td className="p-3 whitespace-nowrap text-gray-400 italic">MASKED</td>
-                  <td className="p-3 whitespace-nowrap text-gray-400 italic">MASKED</td>
-                  <td className="p-3 whitespace-nowrap">$1,250.00</td>
-                </tr>
-                <tr className="bg-gray-50">
-                  <td className="p-3 whitespace-nowrap">P-10235</td>
-                  <td className="p-3 whitespace-nowrap font-medium">Mary J.</td>
-                  <td className="p-3 whitespace-nowrap text-gray-400 italic">MASKED</td>
-                  <td className="p-3 whitespace-nowrap text-gray-400 italic">MASKED</td>
-                  <td className="p-3 whitespace-nowrap text-gray-400 italic">MASKED</td>
-                  <td className="p-3 whitespace-nowrap">$2,300.50</td>
-                </tr>
-                <tr>
-                  <td className="p-3 whitespace-nowrap">P-10236</td>
-                  <td className="p-3 whitespace-nowrap font-medium">Robert D.</td>
-                  <td className="p-3 whitespace-nowrap text-gray-400 italic">MASKED</td>
-                  <td className="p-3 whitespace-nowrap text-gray-400 italic">MASKED</td>
-                  <td className="p-3 whitespace-nowrap text-gray-400 italic">MASKED</td>
-                  <td className="p-3 whitespace-nowrap">$3,450.75</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        );
+    const filteredData = getFilteredData();
+    
+    if (filteredData.length === 0) {
+      return (
+        <div className="text-center py-8 text-gray-500">
+          <AlertCircle className="h-12 w-12 mx-auto mb-2 text-gray-400" />
+          <p>No records found matching your query.</p>
+        </div>
+      );
     }
+    
+    // Render based on table type
+    if (selectedTable === 'medications') {
+      return renderMedicationsTable(filteredData);
+    } else if (selectedTable === 'billing') {
+      return renderBillingTable(filteredData);
+    } else {
+      return renderPatientRecordsTable(filteredData);
+    }
+  };
+
+  const renderPatientRecordsTable = (data) => {
+    return (
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Patient ID</th>
+              <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Name</th>
+              <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">SSN</th>
+              <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Diagnosis</th>
+              <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Medications</th>
+              <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Billing</th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {data.map((record, index) => (
+              <tr key={record.patient_id} className={index % 2 === 1 ? 'bg-gray-50' : ''}>
+                <td className="p-3 whitespace-nowrap">{record.patient_id}</td>
+                <td className="p-3 whitespace-nowrap font-medium">
+                  {currentUser.role === 'Physician' || currentUser.role === 'Nurse' 
+                    ? record.name 
+                    : record.name.split(' ')[0] + ' ' + record.name.split(' ')[1][0] + '.'}
+                </td>
+                <td className="p-3 whitespace-nowrap">
+                  {currentUser.role === 'Physician' 
+                    ? record.ssn 
+                    : currentUser.role === 'Billing Staff' 
+                    ? 'XXX-XX-' + record.ssn.slice(-4)
+                    : <span className="text-gray-400 italic">MASKED</span>}
+                </td>
+                <td className="p-3 whitespace-nowrap">
+                  {currentUser.role === 'Physician' 
+                    ? record.diagnosis 
+                    : currentUser.role === 'Nurse'
+                    ? record.diagnosis.split(',')[0]
+                    : <span className="text-gray-400 italic">MASKED</span>}
+                </td>
+                <td className="p-3 whitespace-nowrap">
+                  {currentUser.role === 'Physician' || currentUser.role === 'Nurse'
+                    ? record.medications
+                    : <span className="text-gray-400 italic">MASKED</span>}
+                </td>
+                <td className="p-3 whitespace-nowrap">
+                  {currentUser.role === 'Physician' || currentUser.role === 'Billing Staff' || currentUser.role === 'Administrator'
+                    ? record.billing_amount
+                    : <span className="text-gray-400 italic">MASKED</span>}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
+
+  const renderMedicationsTable = (data) => {
+    return (
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Patient ID</th>
+              <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Patient Name</th>
+              <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Medication</th>
+              <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Type</th>
+              <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Dosage</th>
+              <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Prescriber</th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {data.map((med, index) => (
+              <tr key={`${med.patient_id}-${index}`} className={index % 2 === 1 ? 'bg-gray-50' : ''}>
+                <td className="p-3 whitespace-nowrap">{med.patient_id}</td>
+                <td className="p-3 whitespace-nowrap font-medium">
+                  {currentUser.role === 'Physician' || currentUser.role === 'Nurse' 
+                    ? med.patient_name 
+                    : currentUser.role === 'Billing Staff' || currentUser.role === 'Administrator'
+                    ? med.patient_name.split(' ')[0] + ' ' + med.patient_name.split(' ')[1][0] + '.'
+                    : <span className="text-gray-400 italic">MASKED</span>}
+                </td>
+                <td className="p-3 whitespace-nowrap">
+                  {currentUser.role === 'Physician' || currentUser.role === 'Nurse'
+                    ? med.medication_name
+                    : <span className="text-gray-400 italic">MASKED</span>}
+                </td>
+                <td className="p-3 whitespace-nowrap">
+                  {currentUser.role === 'Physician' || currentUser.role === 'Nurse'
+                    ? med.medication_type
+                    : <span className="text-gray-400 italic">MASKED</span>}
+                </td>
+                <td className="p-3 whitespace-nowrap">
+                  {currentUser.role === 'Physician' || currentUser.role === 'Nurse'
+                    ? med.dosage
+                    : <span className="text-gray-400 italic">MASKED</span>}
+                </td>
+                <td className="p-3 whitespace-nowrap">
+                  {currentUser.role === 'Physician' || currentUser.role === 'Nurse'
+                    ? med.prescriber
+                    : <span className="text-gray-400 italic">MASKED</span>}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
+
+  const renderBillingTable = (data) => {
+    return (
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Patient ID</th>
+              <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Patient Name</th>
+              <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+              <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Insurance</th>
+              <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Billing Date</th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {data.map((bill, index) => (
+              <tr key={`${bill.patient_id}-${index}`} className={index % 2 === 1 ? 'bg-gray-50' : ''}>
+                <td className="p-3 whitespace-nowrap">{bill.patient_id}</td>
+                <td className="p-3 whitespace-nowrap font-medium">
+                  {currentUser.role === 'Physician' || currentUser.role === 'Nurse' 
+                    ? bill.patient_name 
+                    : bill.patient_name.split(' ')[0] + ' ' + bill.patient_name.split(' ')[1][0] + '.'}
+                </td>
+                <td className="p-3 whitespace-nowrap">
+                  {currentUser.role === 'Billing Staff' || currentUser.role === 'Administrator' || currentUser.role === 'Physician'
+                    ? bill.amount
+                    : <span className="text-gray-400 italic">MASKED</span>}
+                </td>
+                <td className="p-3 whitespace-nowrap">
+                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                    bill.billing_status === 'Paid' ? 'bg-green-100 text-green-800' :
+                    bill.billing_status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
+                    bill.billing_status === 'Overdue' ? 'bg-red-100 text-red-800' :
+                    'bg-blue-100 text-blue-800'
+                  }`}>
+                    {currentUser.role === 'Billing Staff' || currentUser.role === 'Administrator' || currentUser.role === 'Physician'
+                      ? bill.billing_status
+                      : 'MASKED'}
+                  </span>
+                </td>
+                <td className="p-3 whitespace-nowrap">
+                  {currentUser.role === 'Billing Staff' || currentUser.role === 'Administrator'
+                    ? bill.insurance
+                    : <span className="text-gray-400 italic">MASKED</span>}
+                </td>
+                <td className="p-3 whitespace-nowrap">
+                  {currentUser.role === 'Billing Staff' || currentUser.role === 'Administrator'
+                    ? bill.billing_date
+                    : <span className="text-gray-400 italic">MASKED</span>}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
   };
 
   const renderQueryTransformation = () => {
@@ -698,6 +778,7 @@ WHERE ${selectedField} = '${selectedValue}';`
                           // Reset field and value when table changes
                           const newFields = getTableFields();
                           setSelectedField(newFields[0]);
+                          setSelectedValue(getFieldValues()[0]);
                         }}
                       >
                         <option value="patient_records">patient_records</option>
@@ -713,8 +794,7 @@ WHERE ${selectedField} = '${selectedValue}';`
                         onChange={(e) => {
                           setSelectedField(e.target.value);
                           // Reset value when field changes
-                          const newValues = getFieldValues();
-                          setSelectedValue(newValues[0]);
+                          setSelectedValue(getFieldValues()[0]);
                         }}
                       >
                         {getTableFields().map(field => (
