@@ -12,6 +12,11 @@ const DataAccessAuthDemo = () => {
   const [activeTab, setActiveTab] = useState('results');
   const [showQueryBuilder, setShowQueryBuilder] = useState(false);
   const [queryResults, setQueryResults] = useState(true);
+  
+  // Query Builder state
+  const [selectedTable, setSelectedTable] = useState('patient_records');
+  const [selectedField, setSelectedField] = useState('department');
+  const [selectedValue, setSelectedValue] = useState('Cardiology');
 
   const handleUserChange = (user) => {
     setCurrentUser(user);
@@ -24,6 +29,45 @@ const DataAccessAuthDemo = () => {
     { name: 'Sarah Williams', role: 'Billing Staff', department: 'Finance', avatar: '💰' },
     { name: 'Alex Johnson', role: 'Administrator', department: 'IT Security', avatar: '👨‍💼' }
   ];
+  
+  // Generate SQL query based on selections
+  const generateQuery = () => {
+    return `SELECT * FROM ${selectedTable} WHERE ${selectedField} = '${selectedValue}';`;
+  };
+  
+  // Get available values based on selected field
+  const getFieldValues = () => {
+    switch(selectedField) {
+      case 'department':
+        return ['Cardiology', 'Oncology', 'Neurology', 'Pediatrics', 'Emergency'];
+      case 'patient_id':
+        return ['P-10234', 'P-10235', 'P-10236', 'P-10237', 'P-10238'];
+      case 'diagnosis':
+        return ['Hypertension', 'Diabetes', 'Heart Failure', 'Asthma', 'COVID-19'];
+      case 'status':
+        return ['Active', 'Discharged', 'Pending', 'Critical'];
+      case 'medication_type':
+        return ['Oral', 'IV', 'Injection', 'Topical'];
+      case 'billing_status':
+        return ['Paid', 'Pending', 'Overdue', 'Processing'];
+      default:
+        return ['Cardiology', 'Oncology', 'Neurology'];
+    }
+  };
+  
+  // Get available fields based on selected table
+  const getTableFields = () => {
+    switch(selectedTable) {
+      case 'patient_records':
+        return ['department', 'patient_id', 'diagnosis', 'status'];
+      case 'medications':
+        return ['patient_id', 'medication_type', 'department'];
+      case 'billing':
+        return ['patient_id', 'department', 'billing_status'];
+      default:
+        return ['department', 'patient_id', 'diagnosis'];
+    }
+  };
   
   const renderPatientData = () => {
     if (!queryResults) return null;
@@ -206,12 +250,14 @@ const DataAccessAuthDemo = () => {
   };
 
   const renderQueryTransformation = () => {
+    const currentQuery = generateQuery();
+    
     return (
       <div className="space-y-4">
         <div>
           <h3 className="font-semibold text-gray-700 mb-2">Original Query:</h3>
           <div className="bg-gray-50 p-3 rounded border">
-            <code className="text-sm font-mono">SELECT * FROM patient_records WHERE department = 'Cardiology';</code>
+            <code className="text-sm font-mono">{currentQuery}</code>
           </div>
         </div>
         
@@ -227,8 +273,8 @@ const DataAccessAuthDemo = () => {
   diagnosis,
   medications,
   billing_amount
-FROM patient_records 
-WHERE department = 'Cardiology';` 
+FROM ${selectedTable} 
+WHERE ${selectedField} = '${selectedValue}';` 
                 : currentUser.role === 'Billing Staff' ?
                 `SELECT
   patient_id,
@@ -237,8 +283,8 @@ WHERE department = 'Cardiology';`
   'MASKED' AS diagnosis,
   'MASKED' AS medications,
   billing_amount
-FROM patient_records 
-WHERE department = 'Cardiology';`
+FROM ${selectedTable} 
+WHERE ${selectedField} = '${selectedValue}';`
                 : currentUser.role === 'Nurse' ?
                 `SELECT
   patient_id,
@@ -247,8 +293,8 @@ WHERE department = 'Cardiology';`
   SUBSTR(diagnosis, 1, INSTR(diagnosis, ',')) AS diagnosis,
   medications,
   'MASKED' AS billing_amount
-FROM patient_records 
-WHERE department = 'Cardiology';`
+FROM ${selectedTable} 
+WHERE ${selectedField} = '${selectedValue}';`
                 :
                 `SELECT
   patient_id,
@@ -257,8 +303,8 @@ WHERE department = 'Cardiology';`
   'MASKED' AS diagnosis,
   'MASKED' AS medications,
   billing_amount
-FROM patient_records 
-WHERE department = 'Cardiology';`
+FROM ${selectedTable} 
+WHERE ${selectedField} = '${selectedValue}';`
               }
             </code>
           </div>
@@ -644,28 +690,54 @@ WHERE department = 'Cardiology';`
                   <div className="grid grid-cols-3 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Table</label>
-                      <select className="w-full border rounded p-2">
-                        <option>patient_records</option>
-                        <option>medications</option>
-                        <option>billing</option>
+                      <select 
+                        className="w-full border rounded p-2"
+                        value={selectedTable}
+                        onChange={(e) => {
+                          setSelectedTable(e.target.value);
+                          // Reset field and value when table changes
+                          const newFields = getTableFields();
+                          setSelectedField(newFields[0]);
+                        }}
+                      >
+                        <option value="patient_records">patient_records</option>
+                        <option value="medications">medications</option>
+                        <option value="billing">billing</option>
                       </select>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Field</label>
-                      <select className="w-full border rounded p-2">
-                        <option>department</option>
-                        <option>patient_id</option>
-                        <option>diagnosis</option>
+                      <select 
+                        className="w-full border rounded p-2"
+                        value={selectedField}
+                        onChange={(e) => {
+                          setSelectedField(e.target.value);
+                          // Reset value when field changes
+                          const newValues = getFieldValues();
+                          setSelectedValue(newValues[0]);
+                        }}
+                      >
+                        {getTableFields().map(field => (
+                          <option key={field} value={field}>{field}</option>
+                        ))}
                       </select>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Value</label>
-                      <select className="w-full border rounded p-2">
-                        <option>Cardiology</option>
-                        <option>Oncology</option>
-                        <option>Neurology</option>
+                      <select 
+                        className="w-full border rounded p-2"
+                        value={selectedValue}
+                        onChange={(e) => setSelectedValue(e.target.value)}
+                      >
+                        {getFieldValues().map(value => (
+                          <option key={value} value={value}>{value}</option>
+                        ))}
                       </select>
                     </div>
+                  </div>
+                  <div className="bg-gray-50 p-3 rounded border">
+                    <p className="text-sm text-gray-600 mb-1">Generated Query:</p>
+                    <code className="text-sm font-mono">{generateQuery()}</code>
                   </div>
                 </div>
               ) : (
@@ -677,7 +749,7 @@ WHERE department = 'Cardiology';`
                     <input 
                       type="text"
                       className="block w-full pl-10 pr-3 py-2 border rounded-md"
-                      value="SELECT * FROM patient_records WHERE department = 'Cardiology';"
+                      value={generateQuery()}
                       readOnly
                     />
                   </div>
