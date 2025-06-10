@@ -537,10 +537,10 @@ WHERE ${hasExecuted ? executedQuery.field : selectedField} = '${hasExecuted ? ex
                   <td className="p-2 whitespace-nowrap">Physician</td>
                   <td className="p-2 whitespace-nowrap text-green-500">Full</td>
                   <td className="p-2 whitespace-nowrap text-green-500">Full</td>
-                  <td className="p-2 whitespace-nowrap text-yellow-500">Partial</td>
                   <td className="p-2 whitespace-nowrap text-green-500">Full</td>
                   <td className="p-2 whitespace-nowrap text-green-500">Full</td>
-                  <td className="p-2 whitespace-nowrap text-yellow-500">Partial</td>
+                  <td className="p-2 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-2 whitespace-nowrap text-green-500">Full</td>
                 </tr>
                 <tr className={currentUser.role === 'Nurse' ? 'bg-blue-50' : ''}>
                   <td className="p-2 whitespace-nowrap">Nurse</td>
