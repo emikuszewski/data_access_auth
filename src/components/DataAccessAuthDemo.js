@@ -529,100 +529,98 @@ WHERE ${hasExecuted ? executedQuery.field : selectedField} = '${hasExecuted ? ex
             Policy Based Access Policies
           </h3>
           
-          <div className="relative">
-            <div className="overflow-x-auto bg-gray-50 rounded-lg">
-              <table className="border-collapse bg-white" style={{ minWidth: '1600px' }}>
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="p-3 text-left font-medium text-gray-500 text-sm whitespace-nowrap sticky left-0 bg-gray-50 z-10" style={{ width: '150px' }}>Role</th>
-                    <th className="p-3 text-left font-medium text-gray-500 text-sm whitespace-nowrap" style={{ width: '110px' }}>Patient ID</th>
-                    <th className="p-3 text-left font-medium text-gray-500 text-sm whitespace-nowrap" style={{ width: '140px' }}>Name</th>
-                    <th className="p-3 text-left font-medium text-gray-500 text-sm whitespace-nowrap" style={{ width: '120px' }}>SSN</th>
-                    <th className="p-3 text-left font-medium text-gray-500 text-sm whitespace-nowrap" style={{ width: '180px' }}>Diagnosis</th>
-                    <th className="p-3 text-left font-medium text-gray-500 text-sm whitespace-nowrap" style={{ width: '180px' }}>Medications</th>
-                    <th className="p-3 text-left font-medium text-gray-500 text-sm whitespace-nowrap" style={{ width: '110px' }}>Billing</th>
-                    <th className="p-3 text-left font-medium text-gray-500 text-sm whitespace-nowrap" style={{ width: '120px' }}>Department</th>
-                    <th className="p-3 text-left font-medium text-gray-500 text-sm whitespace-nowrap" style={{ width: '100px' }}>Status</th>
-                    <th className="p-3 text-left font-medium text-gray-500 text-sm whitespace-nowrap" style={{ width: '120px' }}>Med Type</th>
-                    <th className="p-3 text-left font-medium text-gray-500 text-sm whitespace-nowrap" style={{ width: '120px' }}>Dosage</th>
-                    <th className="p-3 text-left font-medium text-gray-500 text-sm whitespace-nowrap" style={{ width: '120px' }}>Prescriber</th>
-                    <th className="p-3 text-left font-medium text-gray-500 text-sm whitespace-nowrap" style={{ width: '140px' }}>Billing Status</th>
-                    <th className="p-3 text-left font-medium text-gray-500 text-sm whitespace-nowrap" style={{ width: '120px' }}>Insurance</th>
-                    <th className="p-3 text-left font-medium text-gray-500 text-sm whitespace-nowrap" style={{ width: '120px' }}>Billing Date</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className={currentUser.role === 'Physician' ? 'bg-blue-50' : 'bg-white'}>
-                    <td className="p-3 whitespace-nowrap sticky left-0 bg-white z-10 font-medium" style={{ width: '150px' }}>Physician</td>
-                    <td className="p-3 whitespace-nowrap text-red-500" style={{ width: '110px' }}>None</td>
-                    <td className="p-3 whitespace-nowrap text-red-500" style={{ width: '140px' }}>None</td>
-                    <td className="p-3 whitespace-nowrap text-green-500" style={{ width: '120px' }}>Full</td>
-                    <td className="p-3 whitespace-nowrap text-green-500" style={{ width: '180px' }}>Full</td>
-                    <td className="p-3 whitespace-nowrap text-green-500" style={{ width: '180px' }}>Full</td>
-                    <td className="p-3 whitespace-nowrap text-green-500" style={{ width: '110px' }}>Full</td>
-                    <td className="p-3 whitespace-nowrap text-green-500" style={{ width: '120px' }}>Full</td>
-                    <td className="p-3 whitespace-nowrap text-green-500" style={{ width: '100px' }}>Full</td>
-                    <td className="p-3 whitespace-nowrap text-green-500" style={{ width: '120px' }}>Full</td>
-                    <td className="p-3 whitespace-nowrap text-green-500" style={{ width: '120px' }}>Full</td>
-                    <td className="p-3 whitespace-nowrap text-green-500" style={{ width: '120px' }}>Full</td>
-                    <td className="p-3 whitespace-nowrap text-green-500" style={{ width: '140px' }}>Full</td>
-                    <td className="p-3 whitespace-nowrap text-green-500" style={{ width: '120px' }}>Full</td>
-                    <td className="p-3 whitespace-nowrap text-green-500" style={{ width: '120px' }}>Full</td>
-                  </tr>
-                  <tr className={currentUser.role === 'Nurse' ? 'bg-blue-50' : 'bg-white'}>
-                    <td className="p-3 whitespace-nowrap sticky left-0 bg-white z-10 font-medium" style={{ width: '150px' }}>Nurse</td>
-                    <td className="p-3 whitespace-nowrap text-green-500" style={{ width: '110px' }}>Full</td>
-                    <td className="p-3 whitespace-nowrap text-green-500" style={{ width: '140px' }}>Full</td>
-                    <td className="p-3 whitespace-nowrap text-red-500" style={{ width: '120px' }}>None</td>
-                    <td className="p-3 whitespace-nowrap text-yellow-500" style={{ width: '180px' }}>Partial</td>
-                    <td className="p-3 whitespace-nowrap text-green-500" style={{ width: '180px' }}>Full</td>
-                    <td className="p-3 whitespace-nowrap text-red-500" style={{ width: '110px' }}>None</td>
-                    <td className="p-3 whitespace-nowrap text-green-500" style={{ width: '120px' }}>Full</td>
-                    <td className="p-3 whitespace-nowrap text-green-500" style={{ width: '100px' }}>Full</td>
-                    <td className="p-3 whitespace-nowrap text-green-500" style={{ width: '120px' }}>Full</td>
-                    <td className="p-3 whitespace-nowrap text-green-500" style={{ width: '120px' }}>Full</td>
-                    <td className="p-3 whitespace-nowrap text-green-500" style={{ width: '120px' }}>Full</td>
-                    <td className="p-3 whitespace-nowrap text-red-500" style={{ width: '140px' }}>None</td>
-                    <td className="p-3 whitespace-nowrap text-red-500" style={{ width: '120px' }}>None</td>
-                    <td className="p-3 whitespace-nowrap text-red-500" style={{ width: '120px' }}>None</td>
-                  </tr>
-                  <tr className={currentUser.role === 'Billing Staff' ? 'bg-blue-50' : 'bg-white'}>
-                    <td className="p-3 whitespace-nowrap sticky left-0 bg-white z-10 font-medium" style={{ width: '150px' }}>Billing Staff</td>
-                    <td className="p-3 whitespace-nowrap text-green-500" style={{ width: '110px' }}>Full</td>
-                    <td className="p-3 whitespace-nowrap text-yellow-500" style={{ width: '140px' }}>Partial</td>
-                    <td className="p-3 whitespace-nowrap text-yellow-500" style={{ width: '120px' }}>Partial</td>
-                    <td className="p-3 whitespace-nowrap text-red-500" style={{ width: '180px' }}>None</td>
-                    <td className="p-3 whitespace-nowrap text-red-500" style={{ width: '180px' }}>None</td>
-                    <td className="p-3 whitespace-nowrap text-green-500" style={{ width: '110px' }}>Full</td>
-                    <td className="p-3 whitespace-nowrap text-green-500" style={{ width: '120px' }}>Full</td>
-                    <td className="p-3 whitespace-nowrap text-yellow-500" style={{ width: '100px' }}>Partial</td>
-                    <td className="p-3 whitespace-nowrap text-red-500" style={{ width: '120px' }}>None</td>
-                    <td className="p-3 whitespace-nowrap text-red-500" style={{ width: '120px' }}>None</td>
-                    <td className="p-3 whitespace-nowrap text-red-500" style={{ width: '120px' }}>None</td>
-                    <td className="p-3 whitespace-nowrap text-green-500" style={{ width: '140px' }}>Full</td>
-                    <td className="p-3 whitespace-nowrap text-green-500" style={{ width: '120px' }}>Full</td>
-                    <td className="p-3 whitespace-nowrap text-green-500" style={{ width: '120px' }}>Full</td>
-                  </tr>
-                  <tr className={currentUser.role === 'Administrator' ? 'bg-blue-50' : 'bg-white'}>
-                    <td className="p-3 whitespace-nowrap sticky left-0 bg-white z-10 font-medium" style={{ width: '150px' }}>Administrator</td>
-                    <td className="p-3 whitespace-nowrap text-green-500" style={{ width: '110px' }}>Full</td>
-                    <td className="p-3 whitespace-nowrap text-yellow-500" style={{ width: '140px' }}>Partial</td>
-                    <td className="p-3 whitespace-nowrap text-red-500" style={{ width: '120px' }}>None</td>
-                    <td className="p-3 whitespace-nowrap text-red-500" style={{ width: '180px' }}>None</td>
-                    <td className="p-3 whitespace-nowrap text-red-500" style={{ width: '180px' }}>None</td>
-                    <td className="p-3 whitespace-nowrap text-green-500" style={{ width: '110px' }}>Full</td>
-                    <td className="p-3 whitespace-nowrap text-green-500" style={{ width: '120px' }}>Full</td>
-                    <td className="p-3 whitespace-nowrap text-green-500" style={{ width: '100px' }}>Full</td>
-                    <td className="p-3 whitespace-nowrap text-red-500" style={{ width: '120px' }}>None</td>
-                    <td className="p-3 whitespace-nowrap text-red-500" style={{ width: '120px' }}>None</td>
-                    <td className="p-3 whitespace-nowrap text-red-500" style={{ width: '120px' }}>None</td>
-                    <td className="p-3 whitespace-nowrap text-green-500" style={{ width: '140px' }}>Full</td>
-                    <td className="p-3 whitespace-nowrap text-green-500" style={{ width: '120px' }}>Full</td>
-                    <td className="p-3 whitespace-nowrap text-green-500" style={{ width: '120px' }}>Full</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse">
+              <thead>
+                <tr>
+                  <th className="p-3 text-left font-medium text-gray-500 text-sm whitespace-nowrap min-w-[140px]">Role</th>
+                  <th className="p-3 text-left font-medium text-gray-500 text-sm whitespace-nowrap min-w-[100px]">Patient ID</th>
+                  <th className="p-3 text-left font-medium text-gray-500 text-sm whitespace-nowrap min-w-[120px]">Name</th>
+                  <th className="p-3 text-left font-medium text-gray-500 text-sm whitespace-nowrap min-w-[100px]">SSN</th>
+                  <th className="p-3 text-left font-medium text-gray-500 text-sm whitespace-nowrap min-w-[140px]">Diagnosis</th>
+                  <th className="p-3 text-left font-medium text-gray-500 text-sm whitespace-nowrap min-w-[140px]">Medications</th>
+                  <th className="p-3 text-left font-medium text-gray-500 text-sm whitespace-nowrap min-w-[100px]">Billing</th>
+                  <th className="p-3 text-left font-medium text-gray-500 text-sm whitespace-nowrap min-w-[120px]">Department</th>
+                  <th className="p-3 text-left font-medium text-gray-500 text-sm whitespace-nowrap min-w-[100px]">Status</th>
+                  <th className="p-3 text-left font-medium text-gray-500 text-sm whitespace-nowrap min-w-[120px]">Med Type</th>
+                  <th className="p-3 text-left font-medium text-gray-500 text-sm whitespace-nowrap min-w-[120px]">Dosage</th>
+                  <th className="p-3 text-left font-medium text-gray-500 text-sm whitespace-nowrap min-w-[120px]">Prescriber</th>
+                  <th className="p-3 text-left font-medium text-gray-500 text-sm whitespace-nowrap min-w-[140px]">Billing Status</th>
+                  <th className="p-3 text-left font-medium text-gray-500 text-sm whitespace-nowrap min-w-[120px]">Insurance</th>
+                  <th className="p-3 text-left font-medium text-gray-500 text-sm whitespace-nowrap min-w-[120px]">Billing Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className={currentUser.role === 'Physician' ? 'bg-blue-50' : ''}>
+                  <td className="p-3 whitespace-nowrap font-medium">Physician</td>
+                  <td className="p-3 whitespace-nowrap text-red-500">None</td>
+                  <td className="p-3 whitespace-nowrap text-red-500">None</td>
+                  <td className="p-3 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-3 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-3 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-3 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-3 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-3 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-3 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-3 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-3 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-3 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-3 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-3 whitespace-nowrap text-green-500">Full</td>
+                </tr>
+                <tr className={currentUser.role === 'Nurse' ? 'bg-blue-50' : ''}>
+                  <td className="p-3 whitespace-nowrap font-medium">Nurse</td>
+                  <td className="p-3 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-3 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-3 whitespace-nowrap text-red-500">None</td>
+                  <td className="p-3 whitespace-nowrap text-yellow-500">Partial</td>
+                  <td className="p-3 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-3 whitespace-nowrap text-red-500">None</td>
+                  <td className="p-3 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-3 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-3 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-3 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-3 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-3 whitespace-nowrap text-red-500">None</td>
+                  <td className="p-3 whitespace-nowrap text-red-500">None</td>
+                  <td className="p-3 whitespace-nowrap text-red-500">None</td>
+                </tr>
+                <tr className={currentUser.role === 'Billing Staff' ? 'bg-blue-50' : ''}>
+                  <td className="p-3 whitespace-nowrap font-medium">Billing Staff</td>
+                  <td className="p-3 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-3 whitespace-nowrap text-yellow-500">Partial</td>
+                  <td className="p-3 whitespace-nowrap text-yellow-500">Partial</td>
+                  <td className="p-3 whitespace-nowrap text-red-500">None</td>
+                  <td className="p-3 whitespace-nowrap text-red-500">None</td>
+                  <td className="p-3 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-3 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-3 whitespace-nowrap text-yellow-500">Partial</td>
+                  <td className="p-3 whitespace-nowrap text-red-500">None</td>
+                  <td className="p-3 whitespace-nowrap text-red-500">None</td>
+                  <td className="p-3 whitespace-nowrap text-red-500">None</td>
+                  <td className="p-3 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-3 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-3 whitespace-nowrap text-green-500">Full</td>
+                </tr>
+                <tr className={currentUser.role === 'Administrator' ? 'bg-blue-50' : ''}>
+                  <td className="p-3 whitespace-nowrap font-medium">Administrator</td>
+                  <td className="p-3 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-3 whitespace-nowrap text-yellow-500">Partial</td>
+                  <td className="p-3 whitespace-nowrap text-red-500">None</td>
+                  <td className="p-3 whitespace-nowrap text-red-500">None</td>
+                  <td className="p-3 whitespace-nowrap text-red-500">None</td>
+                  <td className="p-3 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-3 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-3 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-3 whitespace-nowrap text-red-500">None</td>
+                  <td className="p-3 whitespace-nowrap text-red-500">None</td>
+                  <td className="p-3 whitespace-nowrap text-red-500">None</td>
+                  <td className="p-3 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-3 whitespace-nowrap text-green-500">Full</td>
+                  <td className="p-3 whitespace-nowrap text-green-500">Full</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
           
           <div className="mt-4 text-sm text-gray-500 flex items-start space-x-4">
@@ -639,12 +637,6 @@ WHERE ${hasExecuted ? executedQuery.field : selectedField} = '${hasExecuted ? ex
                 <div className="w-3 h-3 bg-red-500 rounded-full mr-1"></div>
                 <span>None</span>
               </div>
-            </div>
-            <div className="ml-auto text-gray-400 italic flex items-center">
-              <span>Scroll horizontally to see all fields</span>
-              <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
             </div>
           </div>
         </div>
