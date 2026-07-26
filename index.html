@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Access Authorization Flow</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body>
+    <div id="app" class="walkthrough">
+        <!-- Header -->
+        <header class="header">
+            <h1 class="title">Data Access Authorization Flow</h1>
+            
+            <!-- Controls -->
+            <div class="controls">
+                <label class="toggle-label">
+                    <span>Autoplay</span>
+                    <div class="toggle">
+                        <input type="checkbox" id="autoplay-toggle">
+                        <div class="toggle-bg">
+                            <div class="toggle-switch"></div>
+                        </div>
+                    </div>
+                </label>
+                
+                <div class="buttons">
+                    <button id="prev-btn" class="btn btn-secondary" disabled>Previous</button>
+                    <button id="next-btn" class="btn btn-primary">Next</button>
+                    <button id="reset-btn" class="btn btn-secondary">Reset</button>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Background Grid and Effects -->
+            <div class="background">
+                <div class="grid-overlay"></div>
+                <div class="glow-effect glow-1"></div>
+                <div class="glow-effect glow-2"></div>
+                <div class="glow-effect glow-3"></div>
+            </div>
+            
+            <!-- Step Progress Indicator -->
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+            
+            <!-- Process Flow Visualization -->
+            <div class="process-flow">
+                <svg class="flow-paths" viewBox="0 0 1000 500" preserveAspectRatio="none">
+                    <!-- Main Horizontal Path (Background) -->
+                    <path 
+                        class="path path-background"
+                        d="M 167,250 L 306,250 L 444,250 L 583,250 L 722,250 L 861,250" 
+                    />
+                    
+                    <!-- Individual Segments -->
+                    <path class="path path-1" d="M 207,250 L 266,250" />
+                    <path class="path path-2" d="M 346,250 L 404,250" />
+                    <path class="path path-3" d="M 484,250 L 543,250" />
+                    <path class="path path-4" d="M 623,250 L 682,250" />
+                    <path class="path path-5" d="M 762,250 L 500,250" />
+                    
+                    <!-- Moving Particles -->
+                    <g class="particles">
+                        <!-- Path 1 Particle -->
+                        <circle r="5" class="particle particle-1">
+                            <animateMotion
+                                path="M 207,250 L 266,250"
+                                dur="1.5s"
+                                repeatCount="indefinite"
+                                begin="indefinite"
+                                id="particle-anim-1"
+                            />
+                        </circle>
+                        
+                        <!-- Path 2 Particle -->
+                        <circle r="5" class="particle particle-2">
+                            <animateMotion
+                                path="M 346,250 L 404,250"
+                                dur="1.5s"
+                                repeatCount="indefinite"
+                                begin="indefinite"
+                                id="particle-anim-2"
+                            />
+                        </circle>
+                        
+                        <!-- Path 3 Particle -->
+                        <circle r="5" class="particle particle-3">
+                            <animateMotion
+                                path="M 484,250 L 543,250"
+                                dur="1.5s"
+                                repeatCount="indefinite"
+                                begin="indefinite"
+                                id="particle-anim-3"
+                            />
+                        </circle>
+                        
+                        <!-- Path 4 Particle -->
+                        <circle r="5" class="particle particle-4">
+                            <animateMotion
+                                path="M 623,250 L 682,250"
+                                dur="1.5s"
+                                repeatCount="indefinite"
+                                begin="indefinite"
+                                id="particle-anim-4"
+                            />
+                        </circle>
+                        
+                        <!-- Path 5 Particle -->
+                        <circle r="5" class="particle particle-5">
+                            <animateMotion
+                                path="M 762,250 L 780,250"
+                                dur="1.5s"
+                                repeatCount="indefinite"
+                                begin="indefinite"
+                                id="particle-anim-5"
+                            />
+                        </circle>
+                    </g>
+                    
+                    <!-- SVG Definitions -->
+                    <defs>
+                        <linearGradient id="pathGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="#60a5fa" />
+                            <stop offset="50%" stop-color="#a78bfa" />
+                            <stop offset="100%" stop-color="#f472b6" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                
+                <!-- Process Components -->
+                <div class="components-container">
+                    <!-- User -->
+                    <div class="component component-0" data-step="0">
+                        <div class="component-icon">
+                            <div class="icon-glow"></div>
+                            <div class="icon-container">
+                                <i data-lucide="user"></i>
+                            </div>
+                        </div>
+                        <span class="component-label">User</span>
+                    </div>
+                    
+                    <!-- Application -->
+                    <div class="component component-1" data-step="1">
+                        <div class="component-icon">
+                            <div class="icon-glow"></div>
+                            <div class="icon-container">
+                                <i data-lucide="server"></i>
+                            </div>
+                        </div>
+                        <span class="component-label">Application</span>
+                    </div>
+                    
+                    <!-- Authorizer -->
+                    <div class="component component-2" data-step="2">
+                        <div class="component-icon">
+                            <div class="icon-glow"></div>
+                            <div class="icon-container">
+                                <i data-lucide="shield"></i>
+                            </div>
+                        </div>
+                        <span class="component-label">Auth Service</span>
+                    </div>
+                    
+                    <!-- Query Modification -->
+                    <div class="component component-3" data-step="3">
+                        <div class="component-icon">
+                            <div class="icon-glow"></div>
+                            <div class="icon-container">
+                                <i data-lucide="filter"></i>
+                            </div>
+                        </div>
+                        <span class="component-label">Query Modification</span>
+                    </div>
+                    
+                    <!-- Database -->
+                    <div class="component component-4" data-step="4">
+                        <div class="component-icon">
+                            <div class="icon-glow"></div>
+                            <div class="icon-container">
+                                <i data-lucide="database"></i>
+                            </div>
+                        </div>
+                        <span class="component-label">Database</span>
+                    </div>
+                    
+                    <!-- Protected Data -->
+                    <div class="component component-5" data-step="5">
+                        <div class="component-icon">
+                            <div class="icon-glow"></div>
+                            <div class="icon-container">
+                                <i data-lucide="lock"></i>
+                            </div>
+                        </div>
+                        <span class="component-label">Protected Data</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Step Information -->
+            <div class="step-info">
+                <div class="step-content">
+                    <h2 id="step-title" class="step-title">User Authentication</h2>
+                    <p id="step-description" class="step-description">User logs into the application</p>
+                </div>
+                
+                <!-- Watermark -->
+                <div class="watermark">
+                    <p>Interactive Authorization Flow Demo</p>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

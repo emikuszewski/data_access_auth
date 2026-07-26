@@ -1,0 +1,730 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AlertCircle, Database, Key, Lock, User, FileText, ChevronDown, LogOut, Settings, Shield, Eye, EyeOff, Search, FileSearch, Activity } from 'lucide-react';
+
+const DataAccessAuthDemo = () => {
+  const navigate = useNavigate();
+  const [currentUser, setCurrentUser] = useState({ 
+    name: 'Dr. Michael Chen', 
+    role: 'Physician', 
+    department: 'Cardiology',
+    avatar: '👨‍⚕️' 
+  });
+  const [showLogin, setShowLogin] = useState(false);
+  const [activeTab, setActiveTab] = useState('results');
+  const [showQueryBuilder, setShowQueryBuilder] = useState(false);
+  const [queryResults, setQueryResults] = useState(true);
+  
+  // Query Builder state
+  const [selectedTable, setSelectedTable] = useState('patient_records');
+  const [selectedField, setSelectedField] = useState('department');
+  const [selectedValue, setSelectedValue] = useState('Cardiology');
+  
+  // Executed query state
+  const [executedQuery, setExecutedQuery] = useState({
+    table: 'patient_records',
+    field: 'department',
+    value: 'Cardiology'
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasExecuted, setHasExecuted] = useState(true);
+
+  const handleUserChange = (user) => {
+    setCurrentUser(user);
+    setShowLogin(false);
+  };
+  
+  // Execute query function
+  const executeQuery = () => {
+    setIsLoading(true);
+    // Simulate query execution delay
+    setTimeout(() => {
+      setExecutedQuery({
+        table: selectedTable,
+        field: selectedField,
+        value: selectedValue
+      });
+      setHasExecuted(true);
+      setIsLoading(false);
+      // Switch to results tab automatically
+      setActiveTab('results');
+    }, 500);
+  };
+  
+  const users = [
+    { name: 'Dr. Michael Chen', role: 'Physician', department: 'Cardiology', avatar: '👨‍⚕️' },
+    { name: 'Nurse Jennifer Smith', role: 'Nurse', department: 'Cardiology', avatar: '👩‍⚕️' },
+    { name: 'Sarah Williams', role: 'Billing Staff', department: 'Finance', avatar: '💰' },
+    { name: 'Alex Johnson', role: 'Administrator', department: 'IT Security', avatar: '👨‍💼' }
+  ];
+  
+  // Sample data for different queries
+  const allPatientRecords = [
+    { patient_id: 'P-10234', name: 'John Smith', ssn: '123-45-6789', diagnosis: 'Hypertension, Stage 2', medications: 'Lisinopril 10mg daily', billing_amount: '$1,250.00', department: 'Cardiology', status: 'Active' },
+    { patient_id: 'P-10235', name: 'Mary Johnson', ssn: '234-56-7890', diagnosis: 'Atrial Fibrillation', medications: 'Eliquis 5mg twice daily', billing_amount: '$2,300.50', department: 'Cardiology', status: 'Active' },
+    { patient_id: 'P-10236', name: 'Robert Davis', ssn: '345-67-8901', diagnosis: 'Heart Failure (EF 35%)', medications: 'Entresto 97/103mg twice daily', billing_amount: '$3,450.75', department: 'Cardiology', status: 'Active' },
+    { patient_id: 'P-10237', name: 'Lisa Chen', ssn: '456-78-9012', diagnosis: 'Lung Cancer, Stage IIIA', medications: 'Keytruda 200mg IV q3 weeks', billing_amount: '$15,250.00', department: 'Oncology', status: 'Active' },
+    { patient_id: 'P-10238', name: 'James Wilson', ssn: '567-89-0123', diagnosis: 'Breast Cancer, Stage II', medications: 'Tamoxifen 20mg daily', billing_amount: '$8,500.00', department: 'Oncology', status: 'Active' },
+    { patient_id: 'P-10239', name: 'Patricia Brown', ssn: '678-90-1234', diagnosis: 'Migraine, Chronic', medications: 'Aimovig 140mg monthly', billing_amount: '$650.00', department: 'Neurology', status: 'Active' },
+    { patient_id: 'P-10240', name: 'Michael Torres', ssn: '789-01-2345', diagnosis: 'Epilepsy', medications: 'Keppra 1000mg twice daily', billing_amount: '$1,100.00', department: 'Neurology', status: 'Discharged' },
+    { patient_id: 'P-10241', name: 'Jennifer Lee', ssn: '890-12-3456', diagnosis: 'Asthma, Moderate', medications: 'Advair 250/50 twice daily', billing_amount: '$450.00', department: 'Pediatrics', status: 'Active' },
+    { patient_id: 'P-10242', name: 'David Martinez', ssn: '901-23-4567', diagnosis: 'Type 1 Diabetes', medications: 'Insulin Glargine 20 units daily', billing_amount: '$890.00', department: 'Pediatrics', status: 'Active' },
+    { patient_id: 'P-10243', name: 'Susan Anderson', ssn: '012-34-5678', diagnosis: 'COVID-19, Severe', medications: 'Remdesivir 100mg IV daily', billing_amount: '$3,100.00', department: 'Emergency', status: 'Critical' }
+  ];
+
+  const allMedications = [
+    { patient_id: 'P-10234', medication_name: 'Lisinopril', medication_type: 'Oral', dosage: '10mg daily', prescriber: 'Dr. Chen', department: 'Cardiology' },
+    { patient_id: 'P-10235', medication_name: 'Eliquis', medication_type: 'Oral', dosage: '5mg twice daily', prescriber: 'Dr. Chen', department: 'Cardiology' },
+    { patient_id: 'P-10237', medication_name: 'Keytruda', medication_type: 'IV', dosage: '200mg q3 weeks', prescriber: 'Dr. Patel', department: 'Oncology' },
+    { patient_id: 'P-10238', medication_name: 'Tamoxifen', medication_type: 'Oral', dosage: '20mg daily', prescriber: 'Dr. Patel', department: 'Oncology' },
+    { patient_id: 'P-10239', medication_name: 'Aimovig', medication_type: 'Injection', dosage: '140mg monthly', prescriber: 'Dr. Kim', department: 'Neurology' },
+    { patient_id: 'P-10240', medication_name: 'Keppra', medication_type: 'Oral', dosage: '1000mg twice daily', prescriber: 'Dr. Kim', department: 'Neurology' },
+    { patient_id: 'P-10243', medication_name: 'Remdesivir', medication_type: 'IV', dosage: '100mg daily', prescriber: 'Dr. Garcia', department: 'Emergency' }
+  ];
+
+  const allBilling = [
+    { patient_id: 'P-10234', amount: '$1,250.00', billing_status: 'Paid', insurance: 'Blue Cross', department: 'Cardiology', billing_date: '2025-05-15' },
+    { patient_id: 'P-10235', amount: '$2,300.50', billing_status: 'Pending', insurance: 'Aetna', department: 'Cardiology', billing_date: '2025-05-20' },
+    { patient_id: 'P-10236', amount: '$3,450.75', billing_status: 'Overdue', insurance: 'United Health', department: 'Cardiology', billing_date: '2025-04-10' },
+    { patient_id: 'P-10237', amount: '$15,250.00', billing_status: 'Processing', insurance: 'Medicare', department: 'Oncology', billing_date: '2025-05-25' },
+    { patient_id: 'P-10238', amount: '$8,500.00', billing_status: 'Paid', insurance: 'Cigna', department: 'Oncology', billing_date: '2025-05-01' },
+    { patient_id: 'P-10239', amount: '$650.00', billing_status: 'Paid', insurance: 'Blue Cross', department: 'Neurology', billing_date: '2025-05-18' },
+    { patient_id: 'P-10240', amount: '$1,100.00', billing_status: 'Pending', insurance: 'Aetna', department: 'Neurology', billing_date: '2025-05-22' },
+    { patient_id: 'P-10243', amount: '$3,100.00', billing_status: 'Processing', insurance: 'Medicare', department: 'Emergency', billing_date: '2025-05-28' }
+  ];
+
+  // Generate SQL query based on selections
+  const generateQuery = () => {
+    return `SELECT * FROM ${selectedTable} WHERE ${selectedField} = '${selectedValue}';`;
+  };
+  
+  // Get available values based on selected field
+  const getFieldValues = (field = selectedField, table = selectedTable) => {
+    if (table === 'medications') {
+      switch(field) {
+        case 'patient_id': return ['P-10234', 'P-10235', 'P-10237', 'P-10238', 'P-10240'];
+        case 'medication_type': return ['Oral', 'IV', 'Injection', 'Topical'];
+        case 'department': return ['Cardiology', 'Oncology', 'Neurology', 'Pediatrics', 'Emergency'];
+        default: return ['Oral', 'IV', 'Injection'];
+      }
+    } else if (table === 'billing') {
+      switch(field) {
+        case 'patient_id': return ['P-10234', 'P-10235', 'P-10236', 'P-10237', 'P-10238'];
+        case 'department': return ['Cardiology', 'Oncology', 'Neurology', 'Pediatrics', 'Emergency'];
+        case 'billing_status': return ['Paid', 'Pending', 'Overdue', 'Processing'];
+        default: return ['Paid', 'Pending', 'Overdue'];
+      }
+    } else {
+      switch(field) {
+        case 'department': return ['Cardiology', 'Oncology', 'Neurology', 'Pediatrics', 'Emergency'];
+        case 'patient_id': return ['P-10234', 'P-10235', 'P-10236', 'P-10237', 'P-10238'];
+        case 'diagnosis': return ['Hypertension', 'Diabetes', 'Heart Failure', 'Asthma', 'COVID-19'];
+        case 'status': return ['Active', 'Discharged', 'Pending', 'Critical'];
+        default: return ['Cardiology', 'Oncology', 'Neurology'];
+      }
+    }
+  };
+  
+  const getTableFields = (table = selectedTable) => {
+    switch(table) {
+      case 'patient_records': return ['department', 'patient_id', 'diagnosis', 'status'];
+      case 'medications': return ['patient_id', 'medication_type', 'department'];
+      case 'billing': return ['patient_id', 'department', 'billing_status'];
+      default: return ['department', 'patient_id', 'diagnosis'];
+    }
+  };
+
+  const getFilteredData = () => {
+    let data = [];
+    switch(executedQuery.table) {
+      case 'patient_records':
+        data = allPatientRecords.filter(record => {
+          if (executedQuery.field === 'diagnosis') return record.diagnosis.toLowerCase().includes(executedQuery.value.toLowerCase());
+          return record[executedQuery.field] === executedQuery.value;
+        });
+        break;
+      case 'medications':
+        data = allMedications.filter(med => med[executedQuery.field] === executedQuery.value);
+        data = data.map(med => {
+          const patient = allPatientRecords.find(p => p.patient_id === med.patient_id);
+          return { ...med, patient_name: patient?.name || 'Unknown' };
+        });
+        break;
+      case 'billing':
+        data = allBilling.filter(bill => bill[executedQuery.field] === executedQuery.value);
+        data = data.map(bill => {
+          const patient = allPatientRecords.find(p => p.patient_id === bill.patient_id);
+          return { ...bill, patient_name: patient?.name || 'Unknown' };
+        });
+        break;
+      default: break;
+    }
+    return data;
+  };
+  
+  const renderPatientData = () => {
+    if (!queryResults) return null;
+    if (isLoading) {
+      return (
+        <div className="text-center py-8 text-gray-500">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mb-2"></div>
+          <p>Executing query...</p>
+        </div>
+      );
+    }
+    if (!hasExecuted) {
+      return (
+        <div className="text-center py-8 text-gray-500">
+          <Database className="h-12 w-12 mx-auto mb-2 text-gray-400" />
+          <p>Build a query and click Execute to see results.</p>
+        </div>
+      );
+    }
+    const filteredData = getFilteredData();
+    return (
+      <div className="space-y-4">
+        <div className="bg-blue-50 p-3 rounded border border-blue-200">
+          <p className="text-sm text-gray-600">Showing results for:</p>
+          <code className="text-sm font-mono text-blue-700">
+            SELECT * FROM {executedQuery.table} WHERE {executedQuery.field} = '{executedQuery.value}'
+          </code>
+        </div>
+        {filteredData.length === 0 ? (
+          <div className="text-center py-8 text-gray-500">
+            <AlertCircle className="h-12 w-12 mx-auto mb-2 text-gray-400" />
+            <p>No records found matching your query.</p>
+          </div>
+        ) : (
+          executedQuery.table === 'medications' ? renderMedicationsTable(filteredData) :
+          executedQuery.table === 'billing' ? renderBillingTable(filteredData) :
+          renderPatientRecordsTable(filteredData)
+        )}
+      </div>
+    );
+  };
+
+  const renderPatientRecordsTable = (data) => (
+    <div className="overflow-x-auto">
+      <table className="w-full border-collapse">
+        <thead className="bg-gray-50">
+          <tr>
+            <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Patient ID</th>
+            <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Name</th>
+            <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">SSN</th>
+            <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Diagnosis</th>
+            <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Medications</th>
+            <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Billing</th>
+          </tr>
+        </thead>
+        <tbody className="bg-white divide-y divide-gray-200">
+          {data.map((record, index) => (
+            <tr key={record.patient_id} className={index % 2 === 1 ? 'bg-gray-50' : ''}>
+              <td className="p-3 whitespace-nowrap">{record.patient_id}</td>
+              <td className="p-3 whitespace-nowrap font-medium">
+                {currentUser.role === 'Physician' || currentUser.role === 'Nurse' 
+                  ? record.name 
+                  : record.name.split(' ')[0] + ' ' + record.name.split(' ')[1][0] + '.'}
+              </td>
+              <td className="p-3 whitespace-nowrap">
+                {currentUser.role === 'Physician' 
+                  ? record.ssn 
+                  : currentUser.role === 'Billing Staff' 
+                  ? 'XXX-XX-' + record.ssn.slice(-4)
+                  : <span className="text-gray-400 italic">MASKED</span>}
+              </td>
+              <td className="p-3 whitespace-nowrap">
+                {currentUser.role === 'Physician' 
+                  ? record.diagnosis 
+                  : currentUser.role === 'Nurse'
+                  ? record.diagnosis.split(',')[0]
+                  : <span className="text-gray-400 italic">MASKED</span>}
+              </td>
+              <td className="p-3 whitespace-nowrap">
+                {currentUser.role === 'Physician' || currentUser.role === 'Nurse'
+                  ? record.medications
+                  : <span className="text-gray-400 italic">MASKED</span>}
+              </td>
+              <td className="p-3 whitespace-nowrap">
+                {currentUser.role === 'Physician' || currentUser.role === 'Billing Staff' || currentUser.role === 'Administrator'
+                  ? record.billing_amount
+                  : <span className="text-gray-400 italic">MASKED</span>}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+
+  const renderMedicationsTable = (data) => (
+    <div className="overflow-x-auto">
+      <table className="w-full border-collapse">
+        <thead className="bg-gray-50">
+          <tr>
+            <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Patient ID</th>
+            <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Patient Name</th>
+            <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Medication</th>
+            <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Type</th>
+            <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Dosage</th>
+            <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Prescriber</th>
+          </tr>
+        </thead>
+        <tbody className="bg-white divide-y divide-gray-200">
+          {data.map((med, index) => (
+            <tr key={`${med.patient_id}-${index}`} className={index % 2 === 1 ? 'bg-gray-50' : ''}>
+              <td className="p-3 whitespace-nowrap">{med.patient_id}</td>
+              <td className="p-3 whitespace-nowrap font-medium">
+                {currentUser.role === 'Physician' || currentUser.role === 'Nurse' 
+                  ? med.patient_name 
+                  : currentUser.role === 'Billing Staff' || currentUser.role === 'Administrator'
+                  ? med.patient_name.split(' ')[0] + ' ' + med.patient_name.split(' ')[1][0] + '.'
+                  : <span className="text-gray-400 italic">MASKED</span>}
+              </td>
+              <td className="p-3 whitespace-nowrap">
+                {currentUser.role === 'Physician' || currentUser.role === 'Nurse' ? med.medication_name : <span className="text-gray-400 italic">MASKED</span>}
+              </td>
+              <td className="p-3 whitespace-nowrap">
+                {currentUser.role === 'Physician' || currentUser.role === 'Nurse' ? med.medication_type : <span className="text-gray-400 italic">MASKED</span>}
+              </td>
+              <td className="p-3 whitespace-nowrap">
+                {currentUser.role === 'Physician' || currentUser.role === 'Nurse' ? med.dosage : <span className="text-gray-400 italic">MASKED</span>}
+              </td>
+              <td className="p-3 whitespace-nowrap">
+                {currentUser.role === 'Physician' || currentUser.role === 'Nurse' ? med.prescriber : <span className="text-gray-400 italic">MASKED</span>}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+
+  const renderBillingTable = (data) => (
+    <div className="overflow-x-auto">
+      <table className="w-full border-collapse">
+        <thead className="bg-gray-50">
+          <tr>
+            <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Patient ID</th>
+            <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Patient Name</th>
+            <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+            <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Status</th>
+            <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Insurance</th>
+            <th className="p-3 text-left font-medium text-gray-500 uppercase tracking-wider">Billing Date</th>
+          </tr>
+        </thead>
+        <tbody className="bg-white divide-y divide-gray-200">
+          {data.map((bill, index) => (
+            <tr key={`${bill.patient_id}-${index}`} className={index % 2 === 1 ? 'bg-gray-50' : ''}>
+              <td className="p-3 whitespace-nowrap">{bill.patient_id}</td>
+              <td className="p-3 whitespace-nowrap font-medium">
+                {currentUser.role === 'Physician' || currentUser.role === 'Nurse' 
+                  ? bill.patient_name 
+                  : bill.patient_name.split(' ')[0] + ' ' + bill.patient_name.split(' ')[1][0] + '.'}
+              </td>
+              <td className="p-3 whitespace-nowrap">
+                {currentUser.role === 'Billing Staff' || currentUser.role === 'Administrator' || currentUser.role === 'Physician'
+                  ? bill.amount : <span className="text-gray-400 italic">MASKED</span>}
+              </td>
+              <td className="p-3 whitespace-nowrap">
+                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                  bill.billing_status === 'Paid' ? 'bg-green-100 text-green-800' :
+                  bill.billing_status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
+                  bill.billing_status === 'Overdue' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'
+                }`}>
+                  {currentUser.role === 'Billing Staff' || currentUser.role === 'Administrator' || currentUser.role === 'Physician'
+                    ? bill.billing_status : 'MASKED'}
+                </span>
+              </td>
+              <td className="p-3 whitespace-nowrap">
+                {currentUser.role === 'Billing Staff' || currentUser.role === 'Administrator'
+                  ? bill.insurance : <span className="text-gray-400 italic">MASKED</span>}
+              </td>
+              <td className="p-3 whitespace-nowrap">
+                {currentUser.role === 'Billing Staff' || currentUser.role === 'Administrator'
+                  ? bill.billing_date : <span className="text-gray-400 italic">MASKED</span>}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+
+  const renderQueryTransformation = () => {
+    const currentQuery = hasExecuted 
+      ? `SELECT * FROM ${executedQuery.table} WHERE ${executedQuery.field} = '${executedQuery.value}';`
+      : generateQuery();
+    const tbl = hasExecuted ? executedQuery.table : selectedTable;
+    const fld = hasExecuted ? executedQuery.field : selectedField;
+    const val = hasExecuted ? executedQuery.value : selectedValue;
+    
+    return (
+      <div className="space-y-4">
+        <div>
+          <h3 className="font-semibold text-gray-700 mb-2">Original Query:</h3>
+          <div className="bg-gray-50 p-3 rounded border">
+            <code className="text-sm font-mono">{currentQuery}</code>
+          </div>
+        </div>
+        <div>
+          <h3 className="font-semibold text-gray-700 mb-2">Modified Query for {currentUser.role}:</h3>
+          <div className="bg-yellow-50 p-3 rounded border border-yellow-200">
+            <code className="text-sm font-mono whitespace-pre-wrap">
+              {currentUser.role === 'Physician' ? 
+                `SELECT\n  patient_id,\n  name,\n  ssn,\n  diagnosis,\n  medications,\n  billing_amount\nFROM ${tbl} \nWHERE ${fld} = '${val}';` 
+                : currentUser.role === 'Billing Staff' ?
+                `SELECT\n  patient_id,\n  SUBSTR(name, 1, INSTR(name, ' ') + 1) AS name,\n  CONCAT('XXX-XX-', SUBSTR(ssn, 8, 4)) AS ssn,\n  'MASKED' AS diagnosis,\n  'MASKED' AS medications,\n  billing_amount\nFROM ${tbl} \nWHERE ${fld} = '${val}';`
+                : currentUser.role === 'Nurse' ?
+                `SELECT\n  patient_id,\n  name,\n  'MASKED' AS ssn,\n  SUBSTR(diagnosis, 1, INSTR(diagnosis, ',')) AS diagnosis,\n  medications,\n  'MASKED' AS billing_amount\nFROM ${tbl} \nWHERE ${fld} = '${val}';`
+                :
+                `SELECT\n  patient_id,\n  SUBSTR(name, 1, INSTR(name, ' ') + 1) AS name,\n  'MASKED' AS ssn,\n  'MASKED' AS diagnosis,\n  'MASKED' AS medications,\n  billing_amount\nFROM ${tbl} \nWHERE ${fld} = '${val}';`
+              }
+            </code>
+          </div>
+        </div>
+        <div className="bg-blue-50 p-4 rounded border border-blue-200">
+          <h3 className="font-semibold text-gray-700 mb-2">Data Access AuthZ Transformation Explanation:</h3>
+          <ul className="list-disc pl-5 space-y-1 text-gray-600">
+            <li>Applied <span className="font-semibold">Policy Based Access Control</span> for role: <span className="font-mono bg-blue-100 px-1 rounded">{currentUser.role}</span></li>
+            {currentUser.role === 'Physician' && (
+              <>
+                <li><span className="font-semibold">Note:</span> Current policies enforce data masking and access controls. Department affiliation (e.g., Dr. Chen in Cardiology) is not included in the current policy set. Production implementations would typically include department-based policies as an additional access control layer.</li>
+                <li>Full Access: Complete visibility of all patient data fields including Patient ID and Name</li>
+                <li>No Column Masking: SSN, diagnosis, medications, and billing data are fully visible</li>
+                <li>Cross-Department Access: Can query patients from any department</li>
+              </>
+            )}
+            {currentUser.role === 'Billing Staff' && (
+              <>
+                <li>Column Masking: Full name reduced to first name + initial</li>
+                <li>Column Masking: SSN shows only last 4 digits</li>
+                <li>Column Masking: Clinical data (diagnosis, medications) completely masked</li>
+                <li>Full Access: Patient ID and billing information (per role permissions)</li>
+              </>
+            )}
+            {currentUser.role === 'Nurse' && (
+              <>
+                <li>Column Masking: SSN completely masked</li>
+                <li>Column Masking: Showing only primary diagnosis (truncated at first comma)</li>
+                <li>Full Access: Medications data for patient care</li>
+                <li>Column Masking: Financial information completely masked</li>
+              </>
+            )}
+            {currentUser.role === 'Administrator' && (
+              <>
+                <li>Column Masking: Full name reduced to first name + initial</li>
+                <li>Column Masking: Personal and clinical data completely masked</li>
+                <li>Full Access: Patient ID and billing information for reporting</li>
+              </>
+            )}
+          </ul>
+        </div>
+        <div className="bg-gray-50 p-4 rounded border">
+          <h3 className="font-semibold text-gray-700 mb-2">Policy Information:</h3>
+          <div className="flex items-center space-x-2 text-gray-600">
+            <Shield className="h-4 w-4 text-green-500" />
+            <span>Policies applied: {currentUser.role === 'Physician' ? '3' : currentUser.role === 'Billing Staff' ? '4' : '5'}</span>
+          </div>
+          <div className="flex items-center space-x-2 text-gray-600 mt-1">
+            <Key className="h-4 w-4 text-blue-500" />
+            <span>Compliance frameworks: HIPAA, GDPR, Organization Policy</span>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderPolicyDetails = () => (
+    <div className="space-y-4">
+      <div className="bg-white p-4 rounded shadow">
+        <h3 className="font-semibold text-gray-700 mb-4 flex items-center">
+          <Shield className="h-5 w-5 mr-2 text-blue-500" />
+          Policy Access Level
+        </h3>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse">
+            <thead>
+              <tr>
+                <th className="p-3 text-left font-medium text-gray-500 text-sm whitespace-nowrap">Role</th>
+                <th className="p-3 text-left font-medium text-gray-500 text-sm whitespace-nowrap">Patient ID</th>
+                <th className="p-3 text-left font-medium text-gray-500 text-sm whitespace-nowrap">Name</th>
+                <th className="p-3 text-left font-medium text-gray-500 text-sm whitespace-nowrap">SSN</th>
+                <th className="p-3 text-left font-medium text-gray-500 text-sm whitespace-nowrap">Diagnosis</th>
+                <th className="p-3 text-left font-medium text-gray-500 text-sm whitespace-nowrap">Medications</th>
+                <th className="p-3 text-left font-medium text-gray-500 text-sm whitespace-nowrap">Billing</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                { role: 'Physician', cells: ['Full', 'Full', 'Full', 'Full', 'Full', 'Full'] },
+                { role: 'Nurse', cells: ['Full', 'Full', 'None', 'Partial', 'Full', 'None'] },
+                { role: 'Billing Staff', cells: ['Full', 'Partial', 'Partial', 'None', 'None', 'Full'] },
+                { role: 'Administrator', cells: ['Full', 'Partial', 'None', 'None', 'None', 'Full'] },
+              ].map(row => (
+                <tr key={row.role} className={currentUser.role === row.role ? 'bg-blue-50' : ''}>
+                  <td className="p-3 whitespace-nowrap font-medium">{row.role}</td>
+                  {row.cells.map((cell, i) => (
+                    <td key={i} className={`p-3 whitespace-nowrap ${
+                      cell === 'Full' ? 'text-green-500' : cell === 'None' ? 'text-red-500' : 'text-yellow-500'
+                    }`}>{cell}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className="mt-4 text-sm text-gray-500 flex items-start space-x-4">
+          <div className="flex items-center"><div className="w-3 h-3 bg-green-500 rounded-full mr-1"></div><span>Full</span></div>
+          <div className="flex items-center"><div className="w-3 h-3 bg-yellow-500 rounded-full mr-1"></div><span>Partial</span></div>
+          <div className="flex items-center"><div className="w-3 h-3 bg-red-500 rounded-full mr-1"></div><span>None</span></div>
+        </div>
+      </div>
+      
+      <div className="bg-white p-4 rounded shadow">
+        <h3 className="font-semibold text-gray-700 mb-2 flex items-center">
+          <Key className="h-5 w-5 mr-2 text-purple-500" />
+          Current Active Policies
+        </h3>
+        <div className="space-y-2 mt-3">
+          {currentUser.role === 'Physician' && (
+            <>
+              <PolicyCard name="HIPAA Minimum Necessary" desc="Limits Protected Health Information (PHI) access to minimum necessary for job function" />
+              <PolicyCard name="Clinical Data Full Access" desc="Unrestricted access to diagnoses, medications, and treatment information" />
+              <PolicyCard name="Patient Identity Access" desc="Full access to patient names and identifiers for clinical care" />
+            </>
+          )}
+          {currentUser.role === 'Billing Staff' && (
+            <>
+              <PolicyCard name="HIPAA Minimum Necessary" desc="Limits Protected Health Information (PHI) access to minimum necessary for job function" />
+              <PolicyCard name="Financial Data Full Access" desc="Complete access to billing amounts and financial records" />
+              <PolicyCard name="SSN Partial Access" desc="Last 4 digits visible for identity verification in billing" />
+              <PolicyCard name="Clinical Data Restriction" desc="Blocks access to all medical diagnoses and treatment data" />
+            </>
+          )}
+          {currentUser.role === 'Nurse' && (
+            <>
+              <PolicyCard name="HIPAA Minimum Necessary" desc="Limits Protected Health Information (PHI) access to minimum necessary for job function" />
+              <PolicyCard name="Clinical Care Access" desc="Access to diagnoses and medications for patient care" />
+              <PolicyCard name="SSN Full Protection" desc="Complete masking of Social Security Numbers" />
+              <PolicyCard name="Financial Data Restriction" desc="Blocks access to all billing and financial information" />
+              <PolicyCard name="Patient Identity Access" desc="Full access to patient names for care coordination" />
+            </>
+          )}
+          {currentUser.role === 'Administrator' && (
+            <>
+              <PolicyCard name="HIPAA Minimum Necessary" desc="Limits Protected Health Information (PHI) access to minimum necessary for job function" />
+              <PolicyCard name="Aggregate Financial Access" desc="Access to billing data for reporting and analysis" />
+              <PolicyCard name="PII Masking Policy" desc="Partial masking of names and complete SSN protection" />
+              <PolicyCard name="Clinical Data Restriction" desc="Blocks access to all medical diagnoses and treatment data" />
+              <PolicyCard name="Audit Trail Access" desc="Access to system logs and data access patterns for compliance" />
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen bg-gray-100 flex flex-col">
+      {/* Header */}
+      <header className="bg-blue-600 text-white shadow-md">
+        <div className="flex justify-between items-center px-6 py-4">
+          <div className="flex items-center space-x-4">
+            <button 
+              onClick={() => navigate('/')}
+              className="bg-blue-700 hover:bg-blue-800 px-3 py-1.5 rounded text-sm font-medium"
+            >
+              ← Back
+            </button>
+            <Shield className="h-8 w-8" />
+            <div>
+              <h1 className="text-xl font-bold">Data Access AuthZ Healthcare Demo</h1>
+              <p className="text-blue-100 text-sm">Dynamic Authorization for Healthcare Data</p>
+            </div>
+          </div>
+          
+          <div className="relative">
+            <button 
+              onClick={() => setShowLogin(!showLogin)}
+              className="flex items-center space-x-2 bg-blue-700 hover:bg-blue-800 px-4 py-2 rounded"
+            >
+              <div className="text-2xl">{currentUser.avatar}</div>
+              <div className="text-left">
+                <div className="font-medium">{currentUser.name}</div>
+                <div className="text-xs text-blue-200">{currentUser.role} • {currentUser.department}</div>
+              </div>
+              <ChevronDown className="h-4 w-4" />
+            </button>
+            
+            {showLogin && (
+              <div className="absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg z-10">
+                <div className="p-2 border-b"><p className="text-gray-500 text-sm">Switch User</p></div>
+                <div className="max-h-60 overflow-y-auto">
+                  {users.map((user, index) => (
+                    <button key={index} className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center space-x-3"
+                      onClick={() => handleUserChange(user)}>
+                      <div className="text-2xl">{user.avatar}</div>
+                      <div>
+                        <div className="font-medium text-gray-900">{user.name}</div>
+                        <div className="text-xs text-gray-600">{user.role} • {user.department}</div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </header>
+      
+      {/* Main Content */}
+      <main className="flex-1 p-6">
+        <div className="max-w-7xl mx-auto">
+          {/* Query Section */}
+          <div className="bg-white rounded-lg shadow mb-6">
+            <div className="p-4 border-b flex justify-between items-center">
+              <h2 className="text-lg font-medium text-gray-700 flex items-center">
+                <Database className="h-5 w-5 mr-2 text-blue-500" />
+                Database Query
+              </h2>
+              <button 
+                onClick={() => setShowQueryBuilder(!showQueryBuilder)}
+                className="text-blue-500 hover:text-blue-700 text-sm font-medium flex items-center"
+              >
+                {showQueryBuilder ? 'Simple Query' : 'Query Builder'} 
+                <ChevronDown className="h-4 w-4 ml-1" />
+              </button>
+            </div>
+            <div className="p-4">
+              {showQueryBuilder ? (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Table</label>
+                      <select className="w-full border rounded p-2" value={selectedTable}
+                        onChange={(e) => {
+                          const newTable = e.target.value;
+                          setSelectedTable(newTable);
+                          const newFields = getTableFields(newTable);
+                          const newField = newFields[0];
+                          setSelectedField(newField);
+                          const newValues = getFieldValues(newField, newTable);
+                          setSelectedValue(newValues[0]);
+                        }}>
+                        <option value="patient_records">patient_records</option>
+                        <option value="medications">medications</option>
+                        <option value="billing">billing</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Field</label>
+                      <select className="w-full border rounded p-2" value={selectedField}
+                        onChange={(e) => {
+                          const newField = e.target.value;
+                          setSelectedField(newField);
+                          const newValues = getFieldValues(newField, selectedTable);
+                          setSelectedValue(newValues[0]);
+                        }}>
+                        {getTableFields().map(field => <option key={field} value={field}>{field}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Value</label>
+                      <select className="w-full border rounded p-2" value={selectedValue}
+                        onChange={(e) => setSelectedValue(e.target.value)}>
+                        {getFieldValues().map(value => <option key={value} value={value}>{value}</option>)}
+                      </select>
+                    </div>
+                  </div>
+                  <div className="bg-gray-50 p-3 rounded border">
+                    <p className="text-sm text-gray-600 mb-1">Generated Query:</p>
+                    <code className="text-sm font-mono">{generateQuery()}</code>
+                    {(hasExecuted && (executedQuery.table !== selectedTable || executedQuery.field !== selectedField || executedQuery.value !== selectedValue)) && (
+                      <p className="text-sm text-amber-600 mt-2 flex items-center">
+                        <AlertCircle className="h-4 w-4 mr-1" />
+                        Query has changed. Click Execute to run the new query.
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex justify-end">
+                    <button onClick={executeQuery} disabled={isLoading}
+                      className={`px-4 py-2 text-white rounded flex items-center ${isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-500 hover:bg-green-600'}`}>
+                      {isLoading ? (<><div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>Executing...</>) :
+                        (<><FileSearch className="h-4 w-4 mr-2" />Execute</>)}
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center">
+                  <div className="flex-1 relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <Search className="h-5 w-5 text-gray-400" />
+                    </div>
+                    <input type="text" className="block w-full pl-10 pr-3 py-2 border rounded-md" value={generateQuery()} readOnly />
+                  </div>
+                  <button onClick={executeQuery} disabled={isLoading}
+                    className={`ml-4 px-4 py-2 text-white rounded flex items-center ${isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-500 hover:bg-green-600'}`}>
+                    {isLoading ? (<><div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>Executing...</>) :
+                      (<><FileSearch className="h-4 w-4 mr-2" />Execute</>)}
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+          
+          {/* Results Section */}
+          <div className="bg-white rounded-lg shadow">
+            <div className="border-b">
+              <div className="flex">
+                {['results', 'transformation', 'policy'].map(tab => (
+                  <button key={tab}
+                    className={`px-4 py-3 text-sm font-medium ${activeTab === tab ? 'text-blue-600 border-b-2 border-blue-500' : 'text-gray-500 hover:text-gray-700'}`}
+                    onClick={() => setActiveTab(tab)}>
+                    {tab === 'results' ? 'Query Results' : tab === 'transformation' ? 'Query Transformation' : 'Policy Details'}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="p-4">
+              {activeTab === 'results' ? renderPatientData() :
+               activeTab === 'transformation' ? renderQueryTransformation() :
+               renderPolicyDetails()}
+            </div>
+          </div>
+        </div>
+      </main>
+      
+      {/* Footer */}
+      <footer className="bg-blue-600 text-white py-2 px-6">
+        <div className="flex justify-between items-center text-sm">
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center">
+              <User className="h-4 w-4 mr-1" />
+              <span>User: {currentUser.name} | Role: {currentUser.role}</span>
+            </div>
+            <div className="flex items-center">
+              <Shield className="h-4 w-4 mr-1" />
+              <span>Policies Applied: {currentUser.role === 'Physician' ? '3' : currentUser.role === 'Billing Staff' ? '4' : '5'}</span>
+            </div>
+          </div>
+          <div className="flex items-center">
+            <Activity className="h-4 w-4 mr-1" />
+            <span>Dynamic Authorization Status: Active</span>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+const PolicyCard = ({ name, desc }) => (
+  <div className="border rounded p-2 bg-gray-50">
+    <div className="flex justify-between items-center">
+      <div className="font-medium">{name}</div>
+      <div className="text-green-500 text-sm font-medium">Active</div>
+    </div>
+    <div className="text-sm text-gray-500 mt-1">{desc}</div>
+  </div>
+);
+
+export default DataAccessAuthDemo;
